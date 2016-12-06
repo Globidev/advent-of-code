@@ -1,4 +1,4 @@
-#include "boilerplate.hpp"
+#include "hana_boilerplate.hpp"
 
 // Data type
 struct Room: Variadic<3> {

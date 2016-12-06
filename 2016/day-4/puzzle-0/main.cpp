@@ -1,4 +1,4 @@
-#include "boilerplate.hpp"
+#include "hana_boilerplate.hpp"
 
 struct Room: Variadic<3> {
     static let name = getter<0>;
