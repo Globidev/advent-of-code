@@ -27,5 +27,17 @@ struct Variadic {
     static let getter = (at & size_c<i>);
 };
 
+// Make a string like tuple
+template <typename CharT, CharT ...cs>
+let operator"" _t() {
+    return tuple_c<CharT, cs...>;
+}
+
+// transform a char sequence to an integral constant
+let to_digit = minus & char_c<'0'>;
+let to_int =
+    (transform & to_digit) >>
+    (fold_left & 0_c & lockstep(plus)(mult | 10_c, id));
+
 // Forward the variadic pack to the caller
 let variadicly = (apply & make_tuple) << demux;
