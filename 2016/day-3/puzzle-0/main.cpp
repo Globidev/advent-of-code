@@ -1,41 +1,18 @@
-#include <boost/hana.hpp>
+#include "hana_boilerplate.hpp"
 
-namespace hana = boost::hana;
-
-#define let const auto
-#define let_ constexpr auto
-
-let_ is_triangle(int a, int b, int c) {
+let is_triangle = [](auto a, auto b, auto c) {
     return (
         (a + b) > c &&
         (a + c) > b &&
         (b + c) > a
     );
-}
-
-struct TriangleChecker {
-
-    template <class Tuple>
-    let_ operator()(const Tuple t) const {
-        using hana::at_c;
-
-        return is_triangle(at_c<0>(t), at_c<1>(t), at_c<2>(t));
-    }
-
 };
 
-template <class... Lines>
-let_ day_3_0(Lines... lines) {
-    using namespace hana;
+let day_3_0_impl = count_if & (unpack & is_triangle);
 
-    let triangles = make_tuple(lines...);
-
-    return count_if(triangles, TriangleChecker{});
-}
+let day_3_0 = variadicly(day_3_0_impl);
 
 int main() {
-    using hana::make_tuple;
-
     static_assert(is_triangle(5, 10, 25) == false);
     static_assert(is_triangle(5, 25, 10) == false);
     static_assert(is_triangle(10, 5, 25) == false);
