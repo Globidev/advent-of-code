@@ -1,7 +1,5 @@
 #include "hana_boilerplate.hpp"
 
-#define let_ const auto
-
 // Parsing
 let supernet_flag = 0_c;
 let hypernet_flag = 1_c;
@@ -18,76 +16,55 @@ struct IP: Variadic<2> {
     static let hypernet_sequences = getter<1>;
 };
 
-struct SupernetParser {
+let parse_supernet = [](auto state) {
+    let_ input = ParserState::input(state);
+    let_ sequence = take_while(input, not_equal.to(char_c<'['>));
 
-    template <class State>
-    let operator()(State state) const {
-        let_ input = ParserState::input(state);
-        let_ sequence = take_while(input, not_equal.to(char_c<'['>));
-
-        return ParserState::constructor(
-            append(ParserState::supernet_sequences(state), sequence),
-            ParserState::hypernet_sequences(state),
-            drop_front(input, size(sequence) + size_c<1>),
-            hypernet_flag
-        );
-    };
-
+    return ParserState::constructor(
+        append(ParserState::supernet_sequences(state), sequence),
+        ParserState::hypernet_sequences(state),
+        drop_front(input, size(sequence) + size_c<1>),
+        hypernet_flag
+    );
 };
 
-let parse_supernet = SupernetParser{};
+let parse_hypernet = [](auto state) {
+    let_ input = ParserState::input(state);
+    let_ sequence = take_while(input, not_equal.to(char_c<']'>));
 
-struct HypernetParser {
-
-    template <class State>
-    let operator()(State state) const {
-        let_ input = ParserState::input(state);
-        let_ sequence = take_while(input, not_equal.to(char_c<']'>));
-
-        return ParserState::constructor(
-            ParserState::supernet_sequences(state),
-            append(ParserState::hypernet_sequences(state), sequence),
-            drop_front(input, size(sequence) + size_c<1>),
-            supernet_flag
-        );
-    }
-
+    return ParserState::constructor(
+        ParserState::supernet_sequences(state),
+        append(ParserState::hypernet_sequences(state), sequence),
+        drop_front(input, size(sequence) + size_c<1>),
+        supernet_flag
+    );
 };
 
-let parse_hypernet = HypernetParser{};
+let parse_ip = [](auto ip_descriptor) {
+    let_ initial_state = ParserState::constructor(
+        make_tuple(), // Supernet sequences
+        make_tuple(), // Hypernet sequences
+        ip_descriptor,
+        supernet_flag
+    );
 
-struct IPParser {
+    let parser = demux(if_)(
+        ParserState::net_flag >> equal.to(supernet_flag),
+        parse_supernet,
+        parse_hypernet
+    );
 
-    template <class IPDescriptor>
-    let operator()(IPDescriptor ip_descriptor) const {
-        let_ initial_state = ParserState::constructor(
-            make_tuple(), // Supernet sequences
-            make_tuple(), // Hypernet sequences
-            ip_descriptor,
-            supernet_flag
-        );
+    let_ final_state = while_(
+        ParserState::input >> size >> not_equal.to(size_c<0>),
+        initial_state,
+        parser
+    );
 
-        let parser = demux(if_)(
-            ParserState::net_flag >> equal.to(supernet_flag),
-            parse_supernet,
-            parse_hypernet
-        );
-
-        let_ final_state = while_(
-            ParserState::input >> size >> not_equal.to(size_c<0>),
-            initial_state,
-            parser
-        );
-
-        return IP::constructor(
-            ParserState::supernet_sequences(final_state),
-            ParserState::hypernet_sequences(final_state)
-        );
-    }
-
+    return IP::constructor(
+        ParserState::supernet_sequences(final_state),
+        ParserState::hypernet_sequences(final_state)
+    );
 };
-
-let parse_ip = IPParser{};
 
 // Logic
 let is_abba = demux(and_)(
