@@ -1,7 +1,4 @@
-#include <boost/hana.hpp>
-
-#define let const auto
-#define let_ constexpr auto
+#include <hana_boilerplate.hpp>
 
 // Data types
 enum Direction { North, South, East, West };
@@ -28,63 +25,67 @@ constexpr Vector2D
     v_west  { -1, 0 }
 ;
 
-let_ turn_left(const Direction d) {
-    switch(d) {
+let turn_left = [](auto d) {
+    switch (d) {
         case North: return West;
         case South: return East;
         case East:  return North;
         case West:  return South;
     }
-}
+};
 
-let_ turn_right(const Direction d) {
+let turn_right = [](auto d) {
     switch(d) {
         case North: return East;
         case South: return West;
         case East:  return South;
         case West:  return North;
     }
-}
+};
 
-let_ direction_vector(const Direction d) {
+
+let direction_vector = [](auto d) {
     switch(d) {
         case North: return v_north;
         case South: return v_south;
         case East:  return v_east;
         case West:  return v_west;
     }
-}
+};
 
-let_ move(const State s, const Instruction i) {
-    let turn          = (i.move == Left ? turn_left : turn_right);
-    let new_direction = turn(s.direction);
-    let vector        = direction_vector(new_direction);
-    let new_position  = Position {
+let turn = [](auto d, auto m) {
+    if (m == Left)
+        return turn_left(d);
+    else
+        return turn_right(d);
+};
+
+let move = [](auto s, auto i) {
+    let_ new_direction = turn(s.direction, i.move);
+    let_ vector        = direction_vector(new_direction);
+    let_ new_position  = Position {
         s.position.x + vector.dx * i.block_count,
         s.position.y + vector.dy * i.block_count,
     };
 
     return State { new_position, new_direction };
-}
+};
 
-template <class T>
-let_ const_abs(const T x) { return x >= 0 ? x : -x; }
+let const_abs = [](auto x) { return x >= 0 ? x : -x; };
 
-let_ taxicab_distance(const Position p1, const Position p2) {
+let taxicab_distance = [](auto p1, auto p2) {
     return const_abs(p2.x - p1.x) +
            const_abs(p2.y - p1.y);
-}
+};
 
-let_ day1_0() { return 0; }
+let day1_0() { return 0; }
 
 template <class... Instructions>
-let_ day1_0(const Instruction in, const Instructions... ins) {
-    using namespace boost::hana;
+let day1_0(const Instruction in, const Instructions... ins) {
+    let_ instructions = make_tuple(in, ins...);
 
-    let instructions = make_tuple(in, ins...);
-
-    let initial_state = State { Position { 0, 0 }, North };
-    let final_state = fold_left(instructions, initial_state, move);
+    let_ initial_state = State { Position { 0, 0 }, North };
+    let_ final_state = fold_left(instructions, initial_state, move);
 
     return taxicab_distance(
         initial_state.position,
@@ -94,7 +95,7 @@ let_ day1_0(const Instruction in, const Instructions... ins) {
 
 // Syntatic sugar
 template <class... Params>
-let_ day1_0(const Move m, const int i, const Params... params) {
+let day1_0(const Move m, const int i, const Params... params) {
     return day1_0(params..., Instruction { m, i });
 }
 
