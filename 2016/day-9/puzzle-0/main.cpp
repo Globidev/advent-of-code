@@ -1,7 +1,5 @@
 #include "hana_boilerplate.hpp"
 
-#define let_ const auto
-
 struct State: Variadic<2> {
     static let input = getter<0>;
     static let decompressed_length = getter<1>;
@@ -25,67 +23,47 @@ let parse_marker_times =
     reverse >>
     to_int;
 
-struct MarkerParser {
+let parse_marker = [](auto str) {
+    let_ rest = drop_front(str);
+    let_ length = parse_marker_length(rest);
+    let_ times = parse_marker_times(rest);
 
-    template <class String>
-    let operator()(String str) const {
-        let_ rest = drop_front(str);
-        let_ length = parse_marker_length(rest);
-        let_ times = parse_marker_times(rest);
-
-        return Marker::constructor(size_c<length>, size_c<times>);
-    }
-
+    return Marker::constructor(size_c<length>, size_c<times>);
 };
 
-let parse_marker = MarkerParser{};
+let decompress_step = [](auto state, auto prefix, auto rest) {
+    let_ next_size = State::decompressed_length(state) + size(prefix);
 
-struct StepDecompressor {
+    let_ marker_splitted = span(rest, not_equal.to(char_c<')'>));
+    let_ mb_marker = first(marker_splitted);
+    let_ marker_size = size(mb_marker) + size_c<1>; // Account for the ')'
+    let_ remainder = drop_front(second(marker_splitted)); // Skip the ')'
 
-    template <class SomeState, class Prefix, class Rest>
-    let operator()(SomeState state, Prefix prefix, Rest rest) const {
-        let_ next_size = State::decompressed_length(state) + size(prefix);
+    // Check if it's a marker and not a dummy paren
+    if constexpr (marker_size >= size_c<5> && (char_c<'x'> ^in^ mb_marker)) {
+        let_ marker = parse_marker(mb_marker);
 
-        let_ marker_splitted = span(rest, not_equal.to(char_c<')'>));
-        let_ marker = first(marker_splitted);
-        let_ marker_size = size(marker) + size_c<1>; // Account for the ')'
-        let_ remainder = drop_front(second(marker_splitted)); // Skip the ')'
-
-        // Check if it's a marker and not a dummy paren
-        return if_(
-            marker_size >= size_c<5> && (char_c<'x'> ^in^ marker),
-            State::constructor(
-                drop_front(remainder, Marker::length(parse_marker(marker))),
-                next_size +
-                    Marker::length(parse_marker(marker)) *
-                    Marker::times(parse_marker(marker))
-            ),
-            State::constructor(remainder, next_size + marker_size)
+        return State::constructor(
+            drop_front(remainder, Marker::length(marker)),
+            next_size + Marker::length(marker) * Marker::times(marker)
         );
     }
-
+    else
+        return State::constructor(remainder, next_size + marker_size);
 };
 
-let decompress_step = StepDecompressor{};
+let decompress_state = [](auto state) {
+    let_ splitted = span(State::input(state), not_equal.to(char_c<'('>));
+    let_ prefix = first(splitted);
+    let_ rest = second(splitted);
 
-struct StateDecompressor {
-    template <class SomeState>
-    let operator()(SomeState state) const {
-        let_ splitted = span(State::input(state), not_equal.to(char_c<'('>));
-        let_ prefix = first(splitted);
-        let_ rest = second(splitted);
+    let_ next_size = State::decompressed_length(state) + size(prefix);
 
-        let_ next_size = State::decompressed_length(state) + size(prefix);
-
-        return if_(
-            size(rest) == size_c<0>,
-            State::constructor(""_t, next_size),
-            decompress_step(state, prefix, rest)
-        );
-    }
+    if constexpr (size(rest) == size_c<0>)
+        return State::constructor(""_t, next_size);
+    else
+        return decompress_step(state, prefix, rest);
 };
-
-let decompress_state = StateDecompressor{};
 
 let state_input_remains =
     State::input >> size >> greater.than(size_c<0>);
