@@ -1,4 +1,5 @@
 #define let constexpr auto
+#define let_ const auto
 
 #define BOOST_HANA_CONFIG_ENABLE_STRING_UDL
 #include <boost/hana.hpp>
@@ -37,7 +38,7 @@ let operator"" _t() {
 let to_digit = minus & char_c<'0'>;
 let to_int =
     (transform & to_digit) >>
-    (fold_left & 0_c & lockstep(plus)(mult | 10_c, id));
+    (fold_left & 0_c & ((mult | 10_c) >> plus));
 
 // Forward the variadic pack to the caller
 let variadicly = (apply & make_tuple) << demux;
