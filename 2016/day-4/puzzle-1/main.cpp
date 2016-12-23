@@ -36,21 +36,12 @@ let parse_room = demux(Room::constructor)(
 
 let a_ = char_c<'a'>;
 
-// This one is painful to write in point free...
-struct NRotator {
-
-    template <class X, class C>
-    let operator()(X x, C c) const {
-        return if_(
-            not_dash(c),
-            (c - a_ + x) % 26_c + a_,
-            char_c<' '>
-        );
-    }
-
+let rotn = [](auto n, auto c) {
+    if constexpr (not_dash(c))
+        return (c - a_ + n) % 26_c + a_;
+    else
+        return char_c<' '>;
 };
-
-let rotn = NRotator{};
 
 let deciphered_room_name = demux(transform)(
     Room::name,
