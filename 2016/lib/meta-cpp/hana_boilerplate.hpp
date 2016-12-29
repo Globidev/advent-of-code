@@ -2,7 +2,9 @@
 #define let_ const auto
 
 #define BOOST_HANA_CONFIG_ENABLE_STRING_UDL
+
 #include <boost/hana.hpp>
+
 using namespace boost::hana;
 using namespace boost::hana::literals;
 
@@ -19,16 +21,15 @@ let operator&(F1 f1, A a) { return flip(f1) | a; }
 template <class F1, class F2>
 let operator>>(F1 f1, F2 f2) { return compose(f2, f1); }
 
-// Can be used to make variadic named tuples
 template <std::size_t count>
-struct Variadic {
+struct TypeTuple {
     static let constructor = make_tuple;
 
     template <std::size_t i>
-    static let getter = (at & size_c<i>);
+    static let at = (boost::hana::at & size_c<i>);
 };
 
-// Make a string like tuple
+// Literal suffix to make a string like tuple
 template <typename CharT, CharT ...cs>
 let operator"" _t() {
     return tuple_c<CharT, cs...>;
@@ -42,3 +43,31 @@ let to_int =
 
 // Forward the variadic pack to the caller
 let variadicly = (apply & make_tuple) << demux;
+
+// Compile time switch
+let case_ = make_pair;
+
+// struct default_t{};
+// auto default_ = case_ | default_t{};
+
+let switch_ = [](auto val, auto... cases_) {
+    let_ cases = make_tuple(cases_...);
+
+    let_ match = find_if(cases, first >> equal.to(val));
+
+    static_assert(match != nothing, "Missing case in switch");
+
+    return second(*match);
+};
+
+// More transformers
+let zip_with_index = demux(zip)(
+    id,
+    size >> (make_range | size_c<0>) >> to_tuple
+);
+
+template <std::size_t i>
+let chunks_of =
+    zip_with_index >>
+    (group & comparing([](auto p) { return at(p, 1_c) / size_c<i>; })) >>
+    (transform & (transform & (at & 0_c)));
