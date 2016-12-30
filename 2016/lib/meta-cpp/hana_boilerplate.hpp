@@ -21,6 +21,30 @@ let operator&(F1 f1, A a) { return flip(f1) | a; }
 template <class F1, class F2>
 let operator>>(F1 f1, F2 f2) { return compose(f2, f1); }
 
+// More transformers
+let zip_with_index = demux(zip)(
+    id,
+    size >> (make_range | size_c<0>) >> to_tuple
+);
+
+template <std::size_t i>
+let chunks_of =
+    zip_with_index >>
+    (group & comparing([](auto p) { return at(p, 1_c) / size_c<i>; })) >>
+    (transform & (transform & (at & 0_c)));
+
+template <std::size_t i>
+let replace_at = [](auto s, auto v) {
+    let zipped = zip_with_index(s);
+    let replaced = replace_if(
+        zipped,
+        [](auto p) { return at(p, 1_c) == size_c<i>; },
+        make_tuple(v, size_c<i>)
+    );
+
+    return transform(replaced, at & 0_c);
+};
+
 template <std::size_t count>
 struct TypeTuple {
     static let constructor = make_tuple,
@@ -28,7 +52,16 @@ struct TypeTuple {
                make        = make_tuple;
 
     template <std::size_t i>
-    static let at = (boost::hana::at & size_c<i>);
+    struct GetSet {
+        template <class T>
+        let operator()(T t) const { return at_c<i>(t); }
+
+        template <class T, class V>
+        let operator()(T t, V v) const { return replace_at<i>(t, v); }
+    };
+
+    template <std::size_t i>
+    static let at = GetSet<i>{};
 };
 
 // Literal suffix to make a string like tuple
@@ -61,15 +94,3 @@ let switch_ = [](auto val, auto... cases_) {
 
     return second(*match);
 };
-
-// More transformers
-let zip_with_index = demux(zip)(
-    id,
-    size >> (make_range | size_c<0>) >> to_tuple
-);
-
-template <std::size_t i>
-let chunks_of =
-    zip_with_index >>
-    (group & comparing([](auto p) { return at(p, 1_c) / size_c<i>; })) >>
-    (transform & (transform & (at & 0_c)));
