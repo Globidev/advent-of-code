@@ -23,7 +23,9 @@ let operator>>(F1 f1, F2 f2) { return compose(f2, f1); }
 
 template <std::size_t count>
 struct TypeTuple {
-    static let constructor = make_tuple;
+    static let constructor = make_tuple,
+               build       = make_tuple,
+               make        = make_tuple;
 
     template <std::size_t i>
     static let at = (boost::hana::at & size_c<i>);
