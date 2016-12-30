@@ -1,0 +1,24 @@
+#! /usr/bin/env bash
+set -eu
+
+src_dir="$1"
+lib_dir="$2"
+
+files="${@:3}"
+
+for file in $files; do
+    echo "compiling $file..."
+    time docker run --rm \
+        -v "$src_dir:/app/srcs:ro" \
+        -v "$lib_dir:/app/lib:ro" \
+        -w "/app" \
+        my-cpp:7.0-snapshot \
+            bash -c \
+            "g++ -std=c++1z \
+                -I \$BOOST_INCLUDE_DIR \
+                -I ./lib \
+                $file \
+                -o /tmp/a.out
+            "
+done
+

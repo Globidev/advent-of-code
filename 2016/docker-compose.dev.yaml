@@ -1,0 +1,18 @@
+version: '2'
+
+services:
+
+  meta-cpp-watch:
+    image: 'watchman:4.7.0'
+    volumes:
+      - './srcs/meta-cpp:/app/srcs:ro'
+      - './lib/meta-cpp:/app/lib:ro'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - '/usr/local/bin/docker:/usr/local/bin/docker'
+    entrypoint: [
+      'bash', '-c',
+      'watchman watch-project /app &&
+       watchman -- trigger /app rebuild ''**/*.cpp''
+                -- ./srcs/build $PWD/srcs/meta-cpp $PWD/lib/meta-cpp &&
+       tail -f /usr/local/var/run/watchman/root-state/log'
+    ]

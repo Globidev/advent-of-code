@@ -11,4 +11,9 @@ services:
 
   meta-cpp:
     extends: builder
-    command: ['python', 'meta-cpp.py', '$PWD/srcs/meta-cpp/', '$PWD/lib/meta-cpp/']
+    command: [
+      'python',
+      'meta-cpp.py',
+      '$PWD/srcs/meta-cpp/',
+      '$PWD/lib/meta-cpp/'
+    ]
