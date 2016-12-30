@@ -79,7 +79,7 @@ let taxicab_distance = [](auto p1, auto p2) {
 };
 
 template <class... Instructions>
-let day1_0(const Instruction in, const Instructions... ins) {
+let day1_1(const Instruction in, const Instructions... ins) {
     let_ instructions = make_tuple(in, ins...);
 
     let_ initial_state = State { Position { 0, 0 }, North };
@@ -93,18 +93,18 @@ let day1_0(const Instruction in, const Instructions... ins) {
 
 // Syntatic sugar
 template <class... Params>
-let day1_0(const Move m, const int i, const Params... params) {
-    return day1_0(params..., Instruction { m, i });
+let day1_1(const Move m, const int i, const Params... params) {
+    return day1_1(params..., Instruction { m, i });
 }
 
 int main(int, char **) {
     // Examples
-    static_assert(day1_0(Right, 2, Left,  3)                     == 5 );
-    static_assert(day1_0(Right, 2, Right, 2, Right, 2)           == 2 );
-    static_assert(day1_0(Right, 5, Left,  5, Right, 5, Right, 3) == 12);
+    static_assert(day1_1(Right, 2, Left,  3)                     == 5 );
+    static_assert(day1_1(Right, 2, Right, 2, Right, 2)           == 2 );
+    static_assert(day1_1(Right, 5, Left,  5, Right, 5, Right, 3) == 12);
 
     // My input
-    static_assert(day1_0(
+    static_assert(day1_1(
         Left, 5, Right, 1, Right, 3, Left, 4, Right, 3, Right, 1, Left, 3,
         Left, 2, Right, 3, Left, 5, Left, 1, Left, 2, Right, 5, Left, 1,
         Right, 5, Right, 1, Left, 4, Right, 1, Right, 3, Left, 4, Left, 1,

@@ -121,21 +121,21 @@ let flatten_instruction = [](auto instruction) {
 let initial_position = Position::constructor(0_c, 0_c);
 let initial_state = State::constructor(initial_position, north_c);
 
-let day1_1_impl =
+let day1_2_impl =
     (transform & flatten_instruction) >> flatten >>
     (scan_left & initial_state & move) >>
     (transform & State::position) >> find_first_repeating >>
     (taxicab_distance | initial_position)
     ;
 
-let day1_1 = variadicly(day1_1_impl);
+let day1_2 = variadicly(day1_2_impl);
 
 int main(int, char **) {
     // Example
-    static_assert(day1_1(right<8>, right<4>, right<4>, right<8>) == 4);
+    static_assert(day1_2(right<8>, right<4>, right<4>, right<8>) == 4);
 
     // My input (Doesn't compile in decent time/memory)
-    // static_assert(day1_1(
+    // static_assert(day1_2(
     //     left<5>, right<1>, right<3>, left<4>, right<3>, right<1>, left<3>,
     //     left<2>, right<3>, left<5>, left<1>, left<2>, right<5>, left<1>,
     //     right<5>, right<1>, left<4>, right<1>, right<3>, left<4>, left<1>,
