@@ -1,4 +1,4 @@
-#include <hana_boilerplate.hpp>
+#include "hana_boilerplate.hpp"
 
 // Data types
 enum Direction { North, South, East, West };
@@ -78,14 +78,12 @@ let taxicab_distance = [](auto p1, auto p2) {
            const_abs(p2.y - p1.y);
 };
 
-let day1_0() { return 0; }
-
 template <class... Instructions>
 let day1_0(const Instruction in, const Instructions... ins) {
     let_ instructions = make_tuple(in, ins...);
 
     let_ initial_state = State { Position { 0, 0 }, North };
-    let_ final_state = fold_left(instructions, initial_state, move);
+    let_ final_state = fold(instructions, initial_state, move);
 
     return taxicab_distance(
         initial_state.position,
@@ -106,7 +104,30 @@ int main(int, char **) {
     static_assert(day1_0(Right, 5, Left,  5, Right, 5, Right, 3) == 12);
 
     // My input
-    static_assert(day1_0(Left, 5, Right, 1, Right, 3, Left, 4, Right, 3, Right, 1, Left, 3, Left, 2, Right, 3, Left, 5, Left, 1, Left, 2, Right, 5, Left, 1, Right, 5, Right, 1, Left, 4, Right, 1, Right, 3, Left, 4, Left, 1, Right, 2, Right, 5, Right, 3, Right, 1, Right, 1, Left, 1, Right, 1, Left, 1, Left, 2, Left, 1, Right, 2, Left, 5, Left, 188, Left, 4, Right, 1, Right, 4, Left, 3, Right, 47, Right, 1, Left, 1, Right, 77, Right, 5, Left, 2, Right, 1, Left, 2, Right, 4, Left, 5, Left, 1, Right, 3, Right, 187, Left, 4, Left, 3, Left, 3, Right, 2, Left, 3, Left, 5, Left, 4, Left, 4, Right, 1, Right, 5, Left, 4, Left, 3, Left, 3, Left, 3, Left, 2, Left, 5, Right, 1, Left, 2, Right, 5, Left, 3, Left, 4, Right, 4, Left, 5, Right, 3, Right, 4, Left, 2, Left, 1, Left, 4, Right, 1, Left, 3, Right, 1, Right, 3, Left, 2, Right, 1, Right, 4, Right, 5, Left, 3, Right, 5, Right, 3, Left, 3, Right, 4, Left, 2, Left, 5, Left, 1, Left, 1, Right, 3, Right, 1, Left, 4, Right, 3, Right, 3, Left, 2, Right, 5, Right, 4, Right, 1, Right, 3, Left, 4, Right, 3, Right, 3, Left, 2, Left, 4, Left, 5, Right, 1, Left, 4, Left, 5, Right, 4, Left, 2, Left, 1, Left, 3, Left, 3, Left, 5, Right, 3, Left, 4, Left, 3, Right, 5, Right, 4, Right, 2, Left, 4, Right, 2, Right, 3, Left, 3, Right, 4, Left, 1, Left, 3, Right, 2, Right, 1, Right, 5, Left, 4, Left, 5, Left, 5, Right, 4, Left, 5, Left, 2, Left, 4, Right, 4, Right, 4, Right, 1, Left, 3, Left, 2, Left, 4, Right, 3) == 273);
+    static_assert(day1_0(
+        Left, 5, Right, 1, Right, 3, Left, 4, Right, 3, Right, 1, Left, 3,
+        Left, 2, Right, 3, Left, 5, Left, 1, Left, 2, Right, 5, Left, 1,
+        Right, 5, Right, 1, Left, 4, Right, 1, Right, 3, Left, 4, Left, 1,
+        Right, 2, Right, 5, Right, 3, Right, 1, Right, 1, Left, 1, Right, 1,
+        Left, 1, Left, 2, Left, 1, Right, 2, Left, 5, Left, 188, Left, 4,
+        Right, 1, Right, 4, Left, 3, Right, 47, Right, 1, Left, 1, Right, 77,
+        Right, 5, Left, 2, Right, 1, Left, 2, Right, 4, Left, 5, Left, 1,
+        Right, 3, Right, 187, Left, 4, Left, 3, Left, 3, Right, 2, Left, 3,
+        Left, 5, Left, 4, Left, 4, Right, 1, Right, 5, Left, 4, Left, 3,
+        Left, 3, Left, 3, Left, 2, Left, 5, Right, 1, Left, 2, Right, 5,
+        Left, 3, Left, 4, Right, 4, Left, 5, Right, 3, Right, 4, Left, 2,
+        Left, 1, Left, 4, Right, 1, Left, 3, Right, 1, Right, 3, Left, 2,
+        Right, 1, Right, 4, Right, 5, Left, 3, Right, 5, Right, 3, Left, 3,
+        Right, 4, Left, 2, Left, 5, Left, 1, Left, 1, Right, 3, Right, 1,
+        Left, 4, Right, 3, Right, 3, Left, 2, Right, 5, Right, 4, Right, 1,
+        Right, 3, Left, 4, Right, 3, Right, 3, Left, 2, Left, 4, Left, 5,
+        Right, 1, Left, 4, Left, 5, Right, 4, Left, 2, Left, 1, Left, 3,
+        Left, 3, Left, 5, Right, 3, Left, 4, Left, 3, Right, 5, Right, 4,
+        Right, 2, Left, 4, Right, 2, Right, 3, Left, 3, Right, 4, Left, 1,
+        Left, 3, Right, 2, Right, 1, Right, 5, Left, 4, Left, 5, Left, 5,
+        Right, 4, Left, 5, Left, 2, Left, 4, Right, 4, Right, 4, Right, 1,
+        Left, 3, Left, 2, Left, 4, Right, 3
+    ) == 273);
 
-    return 0;
+    return 1;
 }
