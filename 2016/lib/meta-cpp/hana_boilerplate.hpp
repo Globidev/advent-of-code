@@ -104,7 +104,7 @@ let map_replace = [](auto map, auto key, auto newval) {
 };
 
 let map_update = [](auto map, auto key, auto f) {
-    return map_replace(map, key, f(*find(map, key)));
+    return map_replace(map, key, f(map[key]));
 };
 
 // Integral casts

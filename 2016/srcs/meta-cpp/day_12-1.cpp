@@ -27,11 +27,9 @@ let initial_registers = make_map(
 
 let clone = Process::constructor & initial_registers & initial_pc;
 
-let reg_value = demux(*_)(
-    lockstep(find)(
-        Process::registers,
-        id
-    )
+let reg_value = lockstep(at_key)(
+    Process::registers,
+    id
 );
 
 // Instructions
@@ -92,7 +90,7 @@ let run_process = (while_ | (not_ << process_exited)) & exec_instruction;
 let day_12_1_impl =
     clone >> run_process >>
     Process::registers >>
-    (find & reg_a_c) >> *_;
+    _[reg_a_c];
 
 let day_12_1 = variadicly(day_12_1_impl);
 

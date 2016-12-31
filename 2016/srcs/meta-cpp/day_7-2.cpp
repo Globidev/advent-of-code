@@ -17,8 +17,8 @@ struct IP: TypeTuple<2> {
 };
 
 let parse_supernet = [](auto state) {
-    let_ input = ParserState::input(state);
-    let_ sequence = take_while(input, not_equal.to(char_c<'['>));
+    let input = ParserState::input(state);
+    let sequence = take_while(input, not_equal.to(char_c<'['>));
 
     return ParserState::constructor(
         append(ParserState::supernet_sequences(state), sequence),
@@ -29,8 +29,8 @@ let parse_supernet = [](auto state) {
 };
 
 let parse_hypernet = [](auto state) {
-    let_ input = ParserState::input(state);
-    let_ sequence = take_while(input, not_equal.to(char_c<']'>));
+    let input = ParserState::input(state);
+    let sequence = take_while(input, not_equal.to(char_c<']'>));
 
     return ParserState::constructor(
         ParserState::supernet_sequences(state),
@@ -41,7 +41,7 @@ let parse_hypernet = [](auto state) {
 };
 
 let parse_ip = [](auto ip_descriptor) {
-    let_ initial_state = ParserState::constructor(
+    let initial_state = ParserState::constructor(
         make_tuple(), // Supernet sequences
         make_tuple(), // Hypernet sequences
         ip_descriptor,
@@ -54,7 +54,7 @@ let parse_ip = [](auto ip_descriptor) {
         parse_hypernet
     );
 
-    let_ final_state = while_(
+    let final_state = while_(
         ParserState::input >> size >> not_equal.to(size_c<0>),
         initial_state,
         parser

@@ -26,26 +26,26 @@ let parse_marker_times =
     to_int;
 
 let parse_marker = [](auto str) {
-    let_ rest = drop_front(str);
-    let_ length = parse_marker_length(rest);
-    let_ times = parse_marker_times(rest);
+    let rest = drop_front(str);
+    let length = parse_marker_length(rest);
+    let times = parse_marker_times(rest);
 
     return Marker::constructor(size_c<length>, size_c<times>);
 };
 
 let decompress_step = [](auto state, auto prefix, auto rest) {
-    let_ next_size = State::decompressed_length(state) + size(prefix);
+    let next_size = State::decompressed_length(state) + size(prefix);
 
-    let_ marker_splitted = span(rest, not_equal.to(char_c<')'>));
-    let_ mb_marker = first(marker_splitted);
-    let_ marker_size = size(mb_marker) + size_c<1>; // Account for the ')'
-    let_ remainder = drop_front(second(marker_splitted)); // Skip the ')'
+    let marker_splitted = span(rest, not_equal.to(char_c<')'>));
+    let mb_marker = first(marker_splitted);
+    let marker_size = size(mb_marker) + size_c<1>; // Account for the ')'
+    let remainder = drop_front(second(marker_splitted)); // Skip the ')'
 
     // Check if it's a marker and not a dummy paren
     if constexpr (marker_size >= size_c<5> && (char_c<'x'> ^in^ mb_marker)) {
         let_ day_9_2 = Day9_2Forward{};
-        let_ marker = parse_marker(mb_marker);
-        let_ expended_size = day_9_2(take_front(remainder, Marker::length(marker)));
+        let marker = parse_marker(mb_marker);
+        let expended_size = day_9_2(take_front(remainder, Marker::length(marker)));
 
         return State::constructor(
             drop_front(remainder, Marker::length(marker)),
@@ -57,11 +57,11 @@ let decompress_step = [](auto state, auto prefix, auto rest) {
 };
 
 let decompress_state = [](auto state) {
-    let_ splitted = span(State::input(state), not_equal.to(char_c<'('>));
-    let_ prefix = first(splitted);
-    let_ rest = second(splitted);
+    let splitted = span(State::input(state), not_equal.to(char_c<'('>));
+    let prefix = first(splitted);
+    let rest = second(splitted);
 
-    let_ next_size = State::decompressed_length(state) + size(prefix);
+    let next_size = State::decompressed_length(state) + size(prefix);
 
     if constexpr (size(rest) == size_c<0>)
         return State::constructor(""_t, next_size);
