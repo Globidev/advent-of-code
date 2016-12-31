@@ -94,3 +94,19 @@ let switch_ = [](auto val, auto... cases_) {
 
     return second(*match);
 };
+
+// Map transformers
+let map_replace = [](auto map, auto key, auto newval) {
+    return insert(
+        erase_key(map, key),
+        make_pair(key, newval)
+    );
+};
+
+let map_update = [](auto map, auto key, auto f) {
+    return map_replace(map, key, f(*find(map, key)));
+};
+
+// Integral casts
+template <class T>
+let to_integral = [](auto x) { return integral_c<T, x>; };
