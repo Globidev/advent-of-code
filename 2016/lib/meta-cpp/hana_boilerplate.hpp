@@ -56,8 +56,8 @@ struct TypeTuple {
         template <class T>
         let operator()(T t) const { return at_c<i>(t); }
 
-        template <class T, class V>
-        let operator()(T t, V v) const { return replace_at<i>(t, v); }
+        template <class T, class F>
+        let operator()(T t, F f) const { return replace_at<i>(t, f(at_c<i>(t))); }
     };
 
     template <std::size_t i>

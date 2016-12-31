@@ -82,21 +82,15 @@ let give = [](auto state, auto value, auto output) {
 
         if constexpr (is_just(mb_bot)) {
             let new_bot = take(*mb_bot, value);
-
-            return State::queue(state, append(queue, new_bot));
+            return State::queue(state, append & new_bot);
         }
         else {
             let new_bot = bot_1v<output_id, value>;
-            let new_bots = insert(bots, make_pair(output_id, new_bot));
-
-            return State::bots(state, new_bots);
+            return State::bots(state, insert & make_pair(output_id, new_bot));
         }
     }
-    else {
-        let new_outputs = insert(outputs, bin_v<output_id, value>);
-
-        return State::outputs(state, new_outputs);
-    }
+    else
+        return State::outputs(state, insert & bin_v<output_id, value>);
 };
 
 let apply_instruction = [](auto state, auto bot, auto instruction) {
@@ -112,7 +106,7 @@ let pop_bot = [](auto state) {
     let instruction = *find(State::instructions(state), Bot::id(bot));
 
     return apply_instruction(
-        State::queue(state, remove_at_c<0>(queue)),
+        State::queue(state, remove_at & 0_c),
         bot,
         instruction
     );
