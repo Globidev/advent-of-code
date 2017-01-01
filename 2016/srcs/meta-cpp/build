@@ -1,4 +1,8 @@
 #! /usr/bin/env bash
+if [ -z $WATCHMAN_SINCE ]; then
+    exit 0;
+fi
+
 set -eu
 
 src_dir="$1"
@@ -8,7 +12,7 @@ files="${@:3}"
 
 for file in $files; do
     echo "compiling $file..."
-    time docker run --rm \
+    time docker run --rm -t \
         -v "$src_dir:/app/srcs:ro" \
         -v "$lib_dir:/app/lib:ro" \
         -w "/app" \
@@ -17,8 +21,8 @@ for file in $files; do
             "g++ -std=c++1z \
                 -I \$BOOST_INCLUDE_DIR \
                 -I ./lib \
+                -Wfatal-errors \
                 $file \
-                -o /tmp/a.out
+                -o /tmp/a.out && /tmp/a.out
             "
 done
-
