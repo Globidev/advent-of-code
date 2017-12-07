@@ -19,7 +19,7 @@ def reallocate_memory(memory_state):
     We can define the common memory gain as cg  = [c] * n = [2, 2, 2, 2]
     the raw leftover memory gain as         rlg = [1] * l + [0] * (n - l)
                                                 = [1, 1, 0, 0]
-    and adjusted leftover memory gain as    lg  = rotate_right(rlg, i + i)
+    and adjusted leftover memory gain as    lg  = rotate_right(rlg, i + 1)
                                                 = [0, 0, 1, 1]
     the total memory gain is                tg  = cg + lg = [2, 2, 3, 3]
 
