@@ -39,12 +39,12 @@ def gen_snail_positions():
 
         steps_for_direction += 1
 
-def day_1_1(square):
+def day_3_1(square):
     snail_positions = gen_snail_positions()
     square_position = [next(snail_positions) for _ in range(square)][-1]
     return manhattan_distance_to_origin(square_position)
 
-def day_1_2(target_square_value):
+def day_3_2(target_square_value):
     adjacent_vectors = [
         v_up,      v_down,     v_left,      v_right,
         v_up_left, v_up_right, v_down_left, v_down_right
@@ -68,5 +68,5 @@ def day_1_2(target_square_value):
 
 refined_input = int(my_input)
 
-print(f'part 1: {day_1_1(refined_input)}')
-print(f'part 2: {day_1_2(refined_input)}')
+print(f'part 1: {day_3_1(refined_input)}')
+print(f'part 2: {day_3_2(refined_input)}')
