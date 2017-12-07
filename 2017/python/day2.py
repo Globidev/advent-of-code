@@ -15,10 +15,10 @@ day_2_2 = partial(
     lambda row: next(i // j for i in row for j in row if i > j and i % j == 0)
 )
 
-refined_input = [
+spreadsheet = [
     [int(n) for n in row.split()]
     for row in my_input.split('\n')
 ]
 
-print(f'part 1: {day_2_1(refined_input)}')
-print(f'part 2: {day_2_2(refined_input)}')
+print(f'part 1: {day_2_1(spreadsheet)}')
+print(f'part 2: {day_2_2(spreadsheet)}')

@@ -66,7 +66,7 @@ def day_3_2(target_square_value):
         if square_value > target_square_value:
             return square_value
 
-refined_input = int(my_input)
+square = int(my_input)
 
-print(f'part 1: {day_3_1(refined_input)}')
-print(f'part 2: {day_3_2(refined_input)}')
+print(f'part 1: {day_3_1(square)}')
+print(f'part 2: {day_3_2(square)}')

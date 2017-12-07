@@ -16,7 +16,7 @@ no_anagrams = lambda words: not any(
 )
 day_4_2 = partial(day_4_x, no_anagrams)
 
-refined_input = my_input.split('\n')
+passphrases = my_input.split('\n')
 
-print(f'part 1: {day_4_1(refined_input)}')
-print(f'part 2: {day_4_2(refined_input)}')
+print(f'part 1: {day_4_1(passphrases)}')
+print(f'part 2: {day_4_2(passphrases)}')
