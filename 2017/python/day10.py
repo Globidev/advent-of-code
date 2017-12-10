@@ -5,6 +5,9 @@ from functools import reduce
 from operator import xor
 
 knot_size = 256
+block_size = 16
+round_count = 64
+lengths_suffix = [17, 31, 73, 47, 23]
 
 class Knot:
     def __init__(self):
@@ -39,16 +42,15 @@ def day_9_1(raw_lengths):
     return fst * snd
 
 def day_9_2(raw_lengths):
-    suffix_lengths = [17, 31, 73, 47, 23]
-    lengths = [ord(c) for c in raw_lengths] + suffix_lengths
+    lengths = [ord(c) for c in raw_lengths] + lengths_suffix
 
     apply_round = lambda k, _: knot_hash_round(lengths, k)
-    final_knot = reduce(apply_round, range(64), Knot())
+    final_knot = reduce(apply_round, range(round_count), Knot())
 
     sparse_hash = final_knot.marks
     dense_hash = (
-        reduce(xor, sparse_hash[i:i+16])
-        for i in range(0, knot_size, 16)
+        reduce(xor, sparse_hash[i:i+block_size])
+        for i in range(0, knot_size, block_size)
     )
     final_hash = ''.join(format(n, '02x') for n in dense_hash)
 
