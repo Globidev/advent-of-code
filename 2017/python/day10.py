@@ -33,7 +33,7 @@ def twist_knot(knot, length):
 def knot_hash_round(lengths, knot):
     return reduce(twist_knot, lengths, knot)
 
-def day_9_1(raw_lengths):
+def day_10_1(raw_lengths):
     lengths = map(int, raw_lengths.split(','))
 
     final_knot = knot_hash_round(lengths, Knot())
@@ -41,7 +41,7 @@ def day_9_1(raw_lengths):
 
     return fst * snd
 
-def day_9_2(raw_lengths):
+def day_10_2(raw_lengths):
     lengths = [ord(c) for c in raw_lengths] + lengths_suffix
 
     apply_round = lambda k, _: knot_hash_round(lengths, k)
@@ -56,5 +56,5 @@ def day_9_2(raw_lengths):
 
     return final_hash
 
-print(f'part 1: {day_9_1(my_input)}')
-print(f'part 2: {day_9_2(my_input)}')
+print(f'part 1: {day_10_1(my_input)}')
+print(f'part 2: {day_10_2(my_input)}')
