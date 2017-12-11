@@ -8,3 +8,11 @@ def readinput(src_file, strip=True):
     with open(join(src_dir, '../inputs', day)) as f:
         data = f.read()
         return data.strip() if strip else data
+
+def scan(f, seq, init):
+    value = init
+    yield value
+
+    for x in seq:
+        value = f(value, x)
+        yield value

@@ -1,16 +1,8 @@
-from lib import readinput
+from lib import readinput, scan
 my_input = readinput(__file__)
 
 from functools import reduce
 from collections import namedtuple
-
-def scan(f, seq, init):
-    value = init
-    yield value
-
-    for x in seq:
-        value = f(value, x)
-        yield value
 
 CubicPosition = namedtuple('CubicPosition', ['x', 'y', 'z'])
 
