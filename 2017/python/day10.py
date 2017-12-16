@@ -1,4 +1,4 @@
-from lib import readinput
+from lib import readinput, apply_n
 my_input = readinput(__file__)
 
 from functools import reduce
@@ -44,8 +44,8 @@ def day_10_1(raw_lengths):
 def day_10_2(raw_lengths):
     lengths = [ord(c) for c in raw_lengths] + lengths_suffix
 
-    apply_round = lambda k, _: knot_hash_round(lengths, k)
-    final_knot = reduce(apply_round, range(round_count), Knot())
+    apply_round = lambda k: knot_hash_round(lengths, k)
+    final_knot = apply_n(apply_round, round_count, Knot())
 
     sparse_hash = final_knot.marks
     dense_hash = (

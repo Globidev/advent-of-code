@@ -1,4 +1,4 @@
-from lib import readinput
+from lib import readinput, apply_n, floyd
 my_input = readinput(__file__)
 
 from enum import Enum
@@ -15,9 +15,6 @@ class MoveType(Enum):
     Partner = 3
 
 DanceMove = namedtuple('DanceMove', ['type', 'args'])
-
-def apply_n(f, n, i):
-    return reduce(lambda s, _: f(s), range(n), i)
 
 move_parsers = {
     's': (MoveType.Spin, int),
@@ -68,28 +65,6 @@ def day_16_2(dance_moves):
     final_line = apply_n(dance, dance_count, initial_line)
 
     return ''.join(final_line)
-
-def floyd(f, x0):
-    tortoise = f(x0)
-    hare = f(f(x0))
-    while tortoise != hare:
-        tortoise = f(tortoise)
-        hare = f(f(hare))
-
-    mu = 0
-    tortoise = x0
-    while tortoise != hare:
-        tortoise = f(tortoise)
-        hare = f(hare)
-        mu += 1
-
-    lam = 1
-    hare = f(tortoise)
-    while tortoise != hare:
-        hare = f(hare)
-        lam += 1
-
-    return lam, mu
 
 dance_moves = [
     parse_danse_move(move_str)
