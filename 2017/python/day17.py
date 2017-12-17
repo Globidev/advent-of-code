@@ -1,35 +1,35 @@
 from lib import readinput
 my_input = readinput(__file__)
 
-def gen_spinlock_passes(steps):
-    virtual_len, position = 1, 0
-    value = 1
-    while True:
-        position = (position + steps) % virtual_len + 1
+from itertools import count
+
+part_1_pass_count = 2017
+part_2_pass_count = 50000000
+
+def spinlock_passes(steps):
+    position = 0
+
+    for value in count(1):
+        buffer_len = value # The buffer size increases with each value
+        position = (position + steps) % buffer_len + 1
         yield (position, value)
-        virtual_len += 1
-        value += 1
 
 def day_17_1(spinlock_steps):
     buffer = [0]
-    spinlock_passes = gen_spinlock_passes(spinlock_steps)
 
-    for pos, value in spinlock_passes:
+    for pos, value in spinlock_passes(spinlock_steps):
         buffer.insert(pos, value)
-        if value == 2017:
+        if value == part_1_pass_count:
             return buffer[(pos + 1) % len(buffer)]
 
 def day_17_2(spinlock_steps):
     short_circuit_value = None
-    spinlock_passes = gen_spinlock_passes(spinlock_steps)
 
-    for pos, value in spinlock_passes:
-        if pos == 1:
+    for pos, value in spinlock_passes(spinlock_steps):
+        if pos == 1: # Inserted after 0
             short_circuit_value = value
-        if value == 50000000:
-            break
-
-    return short_circuit_value
+        if value == part_2_pass_count:
+            return short_circuit_value
 
 spinlock_steps = int(my_input)
 
