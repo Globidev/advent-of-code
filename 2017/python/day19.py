@@ -40,7 +40,7 @@ def day_19_1(diagram):
         if diagram[y][x] not in [VERTICAL_PATH, HORIZONTAL_PATH, INTERSECTION]
     )
 
-def day_19_2(inp):
+def day_19_2(diagram):
    return sum(1 for _ in packet_steps(diagram))
 
 diagram = my_input.split('\n')
