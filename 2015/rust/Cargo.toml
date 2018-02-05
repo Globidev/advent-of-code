@@ -5,3 +5,4 @@ authors = ["Guillaume Depardon <guillaume.depardon@gmail.com>"]
 
 [dependencies]
 rust-crypto = "^0.2"
+nom = "^3.2"
