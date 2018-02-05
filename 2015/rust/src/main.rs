@@ -10,14 +10,12 @@ type DayPart<T> = fn(&str) -> T;
 
 fn run_parts<T1: Display, T2: Display>(
     file_name: &str, p1: DayPart<T1>, p2: DayPart<T2>
-) -> std::io::Result<()> {
+) -> std::io::Result<(T1, T2)> {
     let mut file = File::open(file_name)?;
     let mut input = String::new();
     file.read_to_string(&mut input)?;
 
-    println!("  Part 1: {}", p1(&input));
-    println!("  Part 2: {}", p2(&input));
-    Ok(())
+    Ok((p1(&input), p2(&input)))
 }
 
 fn run_day<T1: Display, T2: Display>(day: u32, p1: DayPart<T1>, p2: DayPart<T2>) {
@@ -27,7 +25,10 @@ fn run_day<T1: Display, T2: Display>(day: u32, p1: DayPart<T1>, p2: DayPart<T2>)
 
     match run_parts(&file_name, p1, p2) {
         Err(e) => println!("  {}", e),
-        _ => ()
+        Ok((r1, r2)) => {
+            println!("  Part 1: {}", r1);
+            println!("  Part 2: {}", r2);
+        }
     }
 }
 
