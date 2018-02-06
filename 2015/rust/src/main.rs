@@ -42,6 +42,7 @@ mod day07;
 mod day08;
 mod day09;
 mod day10;
+mod day11;
 
 fn main() {
     run_day(01, day01::p1, day01::p2);
@@ -54,4 +55,5 @@ fn main() {
     run_day(08, day08::p1, day08::p2);
     run_day(09, day09::p1, day09::p2);
     run_day(10, day10::p1, day10::p2);
+    run_day(11, day11::p1, day11::p2);
 }
