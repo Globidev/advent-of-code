@@ -18,7 +18,7 @@ fn path_distance(map: &DistanceMap, path: &Path) -> Distance {
         }
     };
 
-    path.into_iter().zip(path.into_iter().skip(1))
+    path.iter().zip(path.iter().skip(1))
                .map(distance_between)
                .sum()
 }
@@ -32,8 +32,8 @@ fn paths_from(trips: &TripMap, path: Path, l: usize) -> Vec<Path> {
         let no_destinations = Vec::new();
         let possible_destinations = trips.get(city).unwrap_or(&no_destinations)
                                                    .iter();
-        let unvisited_destinations = possible_destinations.filter(|&&(ref c, _)|
-            !path.contains(c)
+        let unvisited_destinations = possible_destinations.filter(|&&(ref city, _)|
+            !path.contains(city)
         );
         unvisited_destinations.flat_map(|&(ref to, _)| {
             let mut new_path = path.clone();
