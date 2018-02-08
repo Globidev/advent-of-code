@@ -4,15 +4,15 @@ fn next_sequence(seq: &Seq) -> Seq {
     use std::str::FromStr;
 
     let mut next = Seq::new();
-    let mut iter = seq.chars().peekable();
+    let mut iter = seq.chars();
+    let mut x = iter.next();
 
     loop {
-        match iter.next() {
+        match x {
             None => break,
             Some(c) => {
                 let mut count = 1;
-                while iter.peek() == Some(&c) {
-                    iter.next();
+                while { x = iter.next(); x == Some(c) } {
                     count += 1;
                 }
                 next += &count.to_string();
