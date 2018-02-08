@@ -46,40 +46,32 @@ fn bench_day<T1>(b: &mut Bencher, day: u32, f: DayPart<T1>) {
     b.iter(|| f(&input));
 }
 
-#[bench] fn bench_day01_1(b: &mut Bencher) { bench_day(b, 01, day01::p1); }
-#[bench] fn bench_day01_2(b: &mut Bencher) { bench_day(b, 01, day01::p2); }
-#[bench] fn bench_day02_1(b: &mut Bencher) { bench_day(b, 02, day02::p1); }
-#[bench] fn bench_day02_2(b: &mut Bencher) { bench_day(b, 02, day02::p2); }
-#[bench] fn bench_day03_1(b: &mut Bencher) { bench_day(b, 03, day03::p1); }
-#[bench] fn bench_day03_2(b: &mut Bencher) { bench_day(b, 03, day03::p2); }
-#[bench] fn bench_day04_1(b: &mut Bencher) { bench_day(b, 04, day04::p1); }
-#[bench] fn bench_day04_2(b: &mut Bencher) { bench_day(b, 04, day04::p2); }
-#[bench] fn bench_day05_1(b: &mut Bencher) { bench_day(b, 05, day05::p1); }
-#[bench] fn bench_day05_2(b: &mut Bencher) { bench_day(b, 05, day05::p2); }
-#[bench] fn bench_day06_1(b: &mut Bencher) { bench_day(b, 06, day06::p1); }
-#[bench] fn bench_day06_2(b: &mut Bencher) { bench_day(b, 06, day06::p2); }
-#[bench] fn bench_day07_1(b: &mut Bencher) { bench_day(b, 07, day07::p1); }
-#[bench] fn bench_day07_2(b: &mut Bencher) { bench_day(b, 07, day07::p2); }
-#[bench] fn bench_day08_1(b: &mut Bencher) { bench_day(b, 08, day08::p1); }
-#[bench] fn bench_day08_2(b: &mut Bencher) { bench_day(b, 08, day08::p2); }
-#[bench] fn bench_day09_1(b: &mut Bencher) { bench_day(b, 09, day09::p1); }
-#[bench] fn bench_day09_2(b: &mut Bencher) { bench_day(b, 09, day09::p2); }
-#[bench] fn bench_day10_1(b: &mut Bencher) { bench_day(b, 10, day10::p1); }
-#[bench] fn bench_day10_2(b: &mut Bencher) { bench_day(b, 10, day10::p2); }
-#[bench] fn bench_day11_1(b: &mut Bencher) { bench_day(b, 11, day11::p1); }
-#[bench] fn bench_day11_2(b: &mut Bencher) { bench_day(b, 11, day11::p2); }
-#[bench] fn bench_day12_1(b: &mut Bencher) { bench_day(b, 12, day12::p1); }
-#[bench] fn bench_day12_2(b: &mut Bencher) { bench_day(b, 12, day12::p2); }
-#[bench] fn bench_day13_1(b: &mut Bencher) { bench_day(b, 13, day13::p1); }
-#[bench] fn bench_day13_2(b: &mut Bencher) { bench_day(b, 13, day13::p2); }
-#[bench] fn bench_day14_1(b: &mut Bencher) { bench_day(b, 14, day14::p1); }
-#[bench] fn bench_day14_2(b: &mut Bencher) { bench_day(b, 14, day14::p2); }
-#[bench] fn bench_day15_1(b: &mut Bencher) { bench_day(b, 15, day15::p1); }
-#[bench] fn bench_day15_2(b: &mut Bencher) { bench_day(b, 15, day15::p2); }
-#[bench] fn bench_day16_1(b: &mut Bencher) { bench_day(b, 16, day16::p1); }
-#[bench] fn bench_day16_2(b: &mut Bencher) { bench_day(b, 16, day16::p2); }
-#[bench] fn bench_day17_1(b: &mut Bencher) { bench_day(b, 17, day17::p1); }
-#[bench] fn bench_day17_2(b: &mut Bencher) { bench_day(b, 17, day17::p2); }
+macro_rules! day_bench {
+    ($i: expr, $fn1: ident, $fn2: ident, $f1: expr, $f2: expr) => {
+        #[bench]
+        fn $fn1(b: &mut Bencher) { bench_day(b, $i, $f1); }
+        #[bench]
+        fn $fn2(b: &mut Bencher) { bench_day(b, $i, $f2); }
+    };
+}
+
+day_bench!(01, day01_1, day01_2, day01::p1, day01::p2);
+day_bench!(02, day02_1, day02_2, day02::p1, day02::p2);
+day_bench!(03, day03_1, day03_2, day03::p1, day03::p2);
+day_bench!(04, day04_1, day04_2, day04::p1, day04::p2);
+day_bench!(05, day05_1, day05_2, day05::p1, day05::p2);
+day_bench!(06, day06_1, day06_2, day06::p1, day06::p2);
+day_bench!(07, day07_1, day07_2, day07::p1, day07::p2);
+day_bench!(08, day08_1, day08_2, day08::p1, day08::p2);
+day_bench!(09, day09_1, day09_2, day09::p1, day09::p2);
+day_bench!(10, day10_1, day10_2, day10::p1, day10::p2);
+day_bench!(11, day11_1, day11_2, day11::p1, day11::p2);
+day_bench!(12, day12_1, day12_2, day12::p1, day12::p2);
+day_bench!(13, day13_1, day13_2, day13::p1, day13::p2);
+day_bench!(14, day14_1, day14_2, day14::p1, day14::p2);
+day_bench!(15, day15_1, day15_2, day15::p1, day15::p2);
+day_bench!(16, day16_1, day16_2, day16::p1, day16::p2);
+day_bench!(17, day17_1, day17_2, day17::p1, day17::p2);
 
 mod day01;
 mod day02;
