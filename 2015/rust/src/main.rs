@@ -1,10 +1,14 @@
 #![feature(iterator_step_by)]
 #![feature(integer_atomics)]
 #![feature(inclusive_range_syntax)]
+#![feature(test)]
+
+extern crate test;
 
 use std::fmt::Display;
 use std::fs::File;
 use std::io::Read;
+use test::Bencher;
 
 type DayPart<T> = fn(&str) -> T;
 
@@ -31,6 +35,51 @@ fn run_day<T1: Display, T2: Display>(day: u32, p1: DayPart<T1>, p2: DayPart<T2>)
         }
     }
 }
+
+fn bench_day<T1>(b: &mut Bencher, day: u32, f: DayPart<T1>) {
+    let file_name = format_args!("../inputs/day{:02}", day).to_string();
+
+    let mut file = File::open(file_name).unwrap();
+    let mut input = String::new();
+    file.read_to_string(&mut input).unwrap();
+
+    b.iter(|| f(&input));
+}
+
+#[bench] fn bench_day01_1(b: &mut Bencher) { bench_day(b, 01, day01::p1); }
+#[bench] fn bench_day01_2(b: &mut Bencher) { bench_day(b, 01, day01::p2); }
+#[bench] fn bench_day02_1(b: &mut Bencher) { bench_day(b, 02, day02::p1); }
+#[bench] fn bench_day02_2(b: &mut Bencher) { bench_day(b, 02, day02::p2); }
+#[bench] fn bench_day03_1(b: &mut Bencher) { bench_day(b, 03, day03::p1); }
+#[bench] fn bench_day03_2(b: &mut Bencher) { bench_day(b, 03, day03::p2); }
+#[bench] fn bench_day04_1(b: &mut Bencher) { bench_day(b, 04, day04::p1); }
+#[bench] fn bench_day04_2(b: &mut Bencher) { bench_day(b, 04, day04::p2); }
+#[bench] fn bench_day05_1(b: &mut Bencher) { bench_day(b, 05, day05::p1); }
+#[bench] fn bench_day05_2(b: &mut Bencher) { bench_day(b, 05, day05::p2); }
+#[bench] fn bench_day06_1(b: &mut Bencher) { bench_day(b, 06, day06::p1); }
+#[bench] fn bench_day06_2(b: &mut Bencher) { bench_day(b, 06, day06::p2); }
+#[bench] fn bench_day07_1(b: &mut Bencher) { bench_day(b, 07, day07::p1); }
+#[bench] fn bench_day07_2(b: &mut Bencher) { bench_day(b, 07, day07::p2); }
+#[bench] fn bench_day08_1(b: &mut Bencher) { bench_day(b, 08, day08::p1); }
+#[bench] fn bench_day08_2(b: &mut Bencher) { bench_day(b, 08, day08::p2); }
+#[bench] fn bench_day09_1(b: &mut Bencher) { bench_day(b, 09, day09::p1); }
+#[bench] fn bench_day09_2(b: &mut Bencher) { bench_day(b, 09, day09::p2); }
+#[bench] fn bench_day10_1(b: &mut Bencher) { bench_day(b, 10, day10::p1); }
+#[bench] fn bench_day10_2(b: &mut Bencher) { bench_day(b, 10, day10::p2); }
+#[bench] fn bench_day11_1(b: &mut Bencher) { bench_day(b, 11, day11::p1); }
+#[bench] fn bench_day11_2(b: &mut Bencher) { bench_day(b, 11, day11::p2); }
+#[bench] fn bench_day12_1(b: &mut Bencher) { bench_day(b, 12, day12::p1); }
+#[bench] fn bench_day12_2(b: &mut Bencher) { bench_day(b, 12, day12::p2); }
+#[bench] fn bench_day13_1(b: &mut Bencher) { bench_day(b, 13, day13::p1); }
+#[bench] fn bench_day13_2(b: &mut Bencher) { bench_day(b, 13, day13::p2); }
+#[bench] fn bench_day14_1(b: &mut Bencher) { bench_day(b, 14, day14::p1); }
+#[bench] fn bench_day14_2(b: &mut Bencher) { bench_day(b, 14, day14::p2); }
+#[bench] fn bench_day15_1(b: &mut Bencher) { bench_day(b, 15, day15::p1); }
+#[bench] fn bench_day15_2(b: &mut Bencher) { bench_day(b, 15, day15::p2); }
+#[bench] fn bench_day16_1(b: &mut Bencher) { bench_day(b, 16, day16::p1); }
+#[bench] fn bench_day16_2(b: &mut Bencher) { bench_day(b, 16, day16::p2); }
+#[bench] fn bench_day17_1(b: &mut Bencher) { bench_day(b, 17, day17::p1); }
+#[bench] fn bench_day17_2(b: &mut Bencher) { bench_day(b, 17, day17::p2); }
 
 mod day01;
 mod day02;
