@@ -178,11 +178,11 @@ fn fight_logic(spells: &Spells, fight: &mut Fight, pre_turn: PreTurn) -> FightRe
 
         // Boss turn
         resolve_effects(fight);
-        if fight.boss.hp == 0 { return FightResult::Win }
+        if fight.boss.hp == 0 { return Win }
 
         let boss_damage = damage_amount(fight.boss.damage, fight.player.armor);
         fight.player.hp = fight.player.hp.checked_sub(boss_damage).unwrap_or(0);
-        if fight.player.hp == 0 { return FightResult::LossByDeath }
+        if fight.player.hp == 0 { return LossByDeath }
 
     }
 
