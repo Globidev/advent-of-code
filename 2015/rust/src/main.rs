@@ -78,6 +78,7 @@ day_bench!(20, day20_1, day20_2, day20::p1, day20::p2);
 day_bench!(21, day21_1, day21_2, day21::p1, day21::p2);
 day_bench!(23, day23_1, day23_2, day23::p1, day23::p2);
 day_bench!(24, day24_1, day24_2, day24::p1, day24::p2);
+day_bench!(25, day25_1, day25_2, day25::p1, day25::p2);
 
 mod day01;
 mod day02;
@@ -102,6 +103,7 @@ mod day20;
 mod day21;
 mod day23;
 mod day24;
+mod day25;
 
 fn main() {
     run_day(01, day01::p1, day01::p2);
@@ -127,4 +129,5 @@ fn main() {
     run_day(21, day21::p1, day21::p2);
     run_day(23, day23::p1, day23::p2);
     run_day(24, day24::p1, day24::p2);
+    run_day(25, day25::p1, day25::p2);
 }
