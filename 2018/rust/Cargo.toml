@@ -1,0 +1,20 @@
+[package]
+name = "aoc-2018"
+version = "0.1.0"
+authors = ["Guillaume Depardon <guillaume.depardon@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+itertools = "0.7"
+hashbrown = "0.1"
+
+[dev-dependencies]
+criterion = "0.2"
+
+[[bench]]
+name = "aoc"
+harness = false
+
+[[bin]]
+name = "tests"
+path = "tests/main.rs"
