@@ -16,5 +16,9 @@ name = "aoc"
 harness = false
 
 [[bin]]
-name = "tests"
-path = "tests/main.rs"
+name = "solutions"
+path = "solutions/main.rs"
+
+[profile.release]
+panic = "abort"
+lto = true
