@@ -22,5 +22,15 @@ fn day01(c: &mut Criterion) {
     c.bench_functions("day01 p2", p2_funs, input);
 }
 
-criterion_group!(benches, day01);
+fn day02(c: &mut Criterion) {
+    use aoc_2018::day02;
+
+    let input: Vec<_> = day02::parsed_input().collect();
+    c.bench_function("day02 p1", move |b| b.iter(|| day02::part1(&input)));
+
+    let input: Vec<_> = day02::parsed_input().collect();
+    c.bench_function("day02 p2", move |b| b.iter(|| day02::part2_set(&input)));
+}
+
+criterion_group!(benches, day01, day02);
 criterion_main!(benches);
