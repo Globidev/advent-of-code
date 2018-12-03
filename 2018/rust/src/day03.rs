@@ -134,3 +134,21 @@ fn cloth_masks() -> Vec<u16x32> {
     // ];
 
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn p1() {
+        let input: Vec<_> = parse_input(RAW_INPUT).collect();
+
+        assert_eq!(part1(&input), 110891);
+    }
+
+    #[test]
+    fn p2() {
+        let input: Vec<_> = parse_input(RAW_INPUT).collect();
+
+        assert_eq!(part2(&input), 297);
+    }
+}

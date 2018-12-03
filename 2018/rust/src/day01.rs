@@ -52,3 +52,21 @@ impl<T: Eq + Hash + Ord> Set<T> for BTreeSet<T> {
 impl<T: Eq + Hash> Set<T> for SwissTable<T> {
     fn insert(&mut self, value: T) -> bool { SwissTable::insert(self, value) }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn p1() {
+        let input: Vec<_> = parse_input(RAW_INPUT).collect();
+
+        assert_eq!(part1(&input), 442);
+    }
+
+    #[test]
+    fn p2() {
+        let input: Vec<_> = parse_input(RAW_INPUT).collect();
+
+        assert_eq!(part2(&input), 59908);
+    }
+}

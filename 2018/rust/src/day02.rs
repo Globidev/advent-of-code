@@ -86,3 +86,21 @@ struct BoxProperty {
     has_pair: bool,
     has_triple: bool
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn p1() {
+        let input: Vec<_> = parse_input(RAW_INPUT).collect();
+
+        assert_eq!(part1(&input), 9139);
+    }
+
+    #[test]
+    fn p2() {
+        let input: Vec<_> = parse_input(RAW_INPUT).collect();
+
+        assert_eq!(part2_set(&input), String::from("uqcidadzwtnhsljvxyobmkfyr"));
+    }
+}
