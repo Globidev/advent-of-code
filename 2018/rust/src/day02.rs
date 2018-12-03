@@ -3,12 +3,12 @@ const RAW_INPUT: &[u8] = include_bytes!("../../inputs/day02.txt");
 const WORD_LEN: usize = 26;
 const WORD_COUNT: usize = 250;
 
-pub fn parsed_input() -> impl Iterator<Item = &'static [u8]> {
-    RAW_INPUT.split(|&c| c == b'\n')
+pub fn parse_input(input: &[u8]) -> impl Iterator<Item = &[u8]> {
+    input.split(|&c| c == b'\n')
 }
 
 pub fn day02() -> (usize, String) {
-    let input: Vec<_> = parsed_input().collect();
+    let input: Vec<_> = parse_input(RAW_INPUT).collect();
 
     (part1(&input), part2_set(&input))
 }

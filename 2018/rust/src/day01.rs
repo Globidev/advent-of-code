@@ -6,13 +6,13 @@ use hashbrown::HashSet as SwissTable;
 
 const RAW_INPUT: &str = include_str!("../../inputs/day01.txt");
 
-pub fn parsed_input() -> impl Iterator<Item = i32> + Clone {
-    RAW_INPUT.lines()
+pub fn parse_input(input: &str) -> impl Iterator<Item = i32> + Clone + '_ {
+    input.lines()
         .map(|s| s.parse().expect("Badly formatted number in the input"))
 }
 
 pub fn day01() -> (i32, i32) {
-    let input: Vec<_> = parsed_input().collect();
+    let input: Vec<_> = parse_input(RAW_INPUT).collect();
 
     (part1(&input), part2(&input))
 }
