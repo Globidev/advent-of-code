@@ -178,3 +178,21 @@ pub enum Event {
     FallsAsleep,
     WakesUp,
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn p1() {
+        let input = parse_input(RAW_INPUT);
+
+        assert_eq!(part1(&input), 106710);
+    }
+
+    #[test]
+    fn p2() {
+        let input = parse_input(RAW_INPUT);
+
+        assert_eq!(part2(&input), 10491);
+    }
+}
