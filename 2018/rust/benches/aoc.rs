@@ -48,7 +48,18 @@ fn day03(c: &mut Criterion) {
 
     let input: Vec<_> = day03::parse_input(GLOBI_INPUT).collect();
     c.bench_function("day03 p2", move |b| b.iter(|| day03::part2(&input)));
+
+fn day04(c: &mut Criterion) {
+    use aoc_2018::day04;
+
+    const GLOBI_INPUT: &[u8] = include_bytes!("../../inputs/day04.txt");
+
+    let input = day04::parse_input(GLOBI_INPUT);
+    c.bench_function("day04 p1", move |b| b.iter(|| day04::part1(&input)));
+
+    let input = day04::parse_input(GLOBI_INPUT);
+    c.bench_function("day04 p2", move |b| b.iter(|| day04::part2(&input)));
 }
 
-criterion_group!(benches, day01, day02, day03);
+criterion_group!(benches, day01, day02, day03, day04);
 criterion_main!(benches);
