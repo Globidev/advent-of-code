@@ -13,7 +13,7 @@ pub fn day03() -> (usize, u16) {
 pub fn part1(claims: &[Claim]) -> usize {
     let cloth_masks = cloth_masks();
 
-    let mut cloth = [0; 1024 * 1024];
+    let mut cloth = vec![0; 1024 * 1024];
 
     for &Claim { left, top, width, height, .. } in claims {
         for y in top..top + height {
@@ -34,7 +34,7 @@ pub fn part1(claims: &[Claim]) -> usize {
 pub fn part2(claims: &[Claim]) -> u16 {
     let cloth_masks = cloth_masks();
 
-    let mut cloth = [0; 1024 * 1024];
+    let mut cloth = vec![0; 1024 * 1024];
 
     for &Claim { left, top, width, height, .. } in claims {
         for y in top..top + height {
