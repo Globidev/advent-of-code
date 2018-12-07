@@ -207,5 +207,16 @@ fn day05(c: &mut Criterion) {
     c.bench_function("day05 p2", move |b| b.iter(|| day05::part2(GLOBI_INPUT_STR)));
 }
 
-criterion_group!(benches, day01, day02, day03, day04, day05);
+fn day06(c: &mut Criterion) {
+    use aoc_2018::day06;
+
+    const GLOBI_INPUT_STR: &str = include_str!("../../inputs/day06.txt");
+
+    let coords: Vec<_> = day06::parse_coordinates(GLOBI_INPUT_STR).collect();
+    c.bench_function("day06 p1", move |b| b.iter(|| day06::part1(&coords)));
+    let coords: Vec<_> = day06::parse_coordinates(GLOBI_INPUT_STR).collect();
+    c.bench_function("day06 p2", move |b| b.iter(|| day06::part2(&coords)));
+}
+
+criterion_group!(benches, day01, day02, day03, day04, day05, day06);
 criterion_main!(benches);
