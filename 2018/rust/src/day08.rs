@@ -57,8 +57,8 @@ fn build_graph(data: &[u32]) -> Node {
 fn parse_nodes(data: &mut impl Iterator<Item = u32>, count: u32) -> Vec<Node> {
     (0..count)
         .map(|_| {
-            let (entry_len, meta_len) = (data.next().unwrap(), data.next().unwrap());
-            let children = parse_nodes(data, entry_len);
+            let (child_len, meta_len) = (data.next().unwrap(), data.next().unwrap());
+            let children = parse_nodes(data, child_len);
             let meta_data = data.take(meta_len as usize).collect();
             Node { children, meta_data }
         }).collect()
