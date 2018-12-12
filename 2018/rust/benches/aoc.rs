@@ -102,5 +102,53 @@ fn day08(c: &mut Criterion) {
     c.bench_function("day08 p2", move |b| b.iter(|| day08::part2(&data)));
 }
 
-criterion_group!(benches, day01, day02, day03, day04, day05, day06, day07, day08);
-criterion_main!(benches);
+fn day09(c: &mut Criterion) {
+    use aoc_2018::day09;
+
+    const GLOBI_INPUT_STR: &str = include_str!("../../inputs/day09.txt");
+
+    let config = day09::parse_input(GLOBI_INPUT_STR);
+    c.bench_function("day09 p1", move |b| b.iter(|| day09::part1(&config)));
+}
+
+fn day09_2(c: &mut Criterion) {
+    use aoc_2018::day09;
+
+    const GLOBI_INPUT_STR: &str = include_str!("../../inputs/day09.txt");
+
+    let config = day09::parse_input(GLOBI_INPUT_STR);
+    c.bench_function("day09 p2", move |b| b.iter(|| day09::part2(&config)));
+}
+
+fn day10(c: &mut Criterion) {
+    use aoc_2018::day10;
+
+    const GLOBI_INPUT_STR: &str = include_str!("../../inputs/day10.txt");
+
+    let points: Vec<_> = day10::parse_input(GLOBI_INPUT_STR).collect();
+    c.bench_function("day10 p1", move |b| b.iter(|| day10::part1(&points)));
+
+    let points: Vec<_> = day10::parse_input(GLOBI_INPUT_STR).collect();
+    c.bench_function("day10 p2", move |b| b.iter(|| day10::part2(&points)));
+}
+
+fn day11(c: &mut Criterion) {
+    use aoc_2018::day11;
+
+    const GLOBI_INPUT: u16 = 1723;
+
+    c.bench_function("day11 p1", move |b| b.iter(|| day11::part1(GLOBI_INPUT)));
+    c.bench_function("day11 p2", move |b| b.iter(|| day11::part2(GLOBI_INPUT)));
+}
+
+criterion_group!(benches,
+    day01, day02, day03, day04, day05, day06, day07, day08, day09, day10,
+    // day11
+);
+
+criterion_group!{
+    name = slower_benches;
+    config = Criterion::default().sample_size(10);
+    targets = day09_2, day11
+}
+criterion_main!(benches, slower_benches);
