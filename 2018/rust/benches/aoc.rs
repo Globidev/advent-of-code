@@ -10,6 +10,12 @@ fn day01(c: &mut Criterion) {
 
     let input: Vec<_> = day01::parse_input(GLOBI_INPUT).collect();
     c.bench_function("day01 p1", move |b| b.iter(|| day01::part1(&input)));
+}
+
+fn day01_2(c: &mut Criterion) {
+    use aoc_2018::day01;
+
+    const GLOBI_INPUT: &str = include_str!("../../inputs/day01.txt");
 
     use std::collections::{HashSet, BTreeSet};
     use hashbrown::HashSet as SwissTable;
@@ -138,17 +144,48 @@ fn day11(c: &mut Criterion) {
     const GLOBI_INPUT: u16 = 1723;
 
     c.bench_function("day11 p1", move |b| b.iter(|| day11::part1(GLOBI_INPUT)));
+}
+
+fn day11_2(c: &mut Criterion) {
+    use aoc_2018::day11;
+
+    const GLOBI_INPUT: u16 = 1723;
+
     c.bench_function("day11 p2", move |b| b.iter(|| day11::part2(GLOBI_INPUT)));
+}
+
+fn day12(c: &mut Criterion) {
+    use aoc_2018::day12;
+
+    const GLOBI_INPUT: &[u8] = include_bytes!("../../inputs/day12.txt");
+
+    let (state, rules) = day12::parse_input(GLOBI_INPUT);
+    c.bench_function("day12 p1", move |b| b.iter(|| day12::part1(&state, &rules)));
+
+    let (state, rules) = day12::parse_input(GLOBI_INPUT);
+    c.bench_function("day12 p2", move |b| b.iter(|| day12::part2(&state, &rules)));
+}
+
+fn day13(c: &mut Criterion) {
+    use aoc_2018::day13;
+
+    const GLOBI_INPUT: &[u8] = include_bytes!("../../inputs/day13.txt");
+
+    let (world, trains) = day13::parse_input(GLOBI_INPUT);
+    c.bench_function("day13 p1", move |b| b.iter(|| day13::part1(&world, &trains)));
+
+    let (world, trains) = day13::parse_input(GLOBI_INPUT);
+    c.bench_function("day13 p2", move |b| b.iter(|| day13::part2(&world, &trains)));
 }
 
 criterion_group!(benches,
     day01, day02, day03, day04, day05, day06, day07, day08, day09, day10,
-    // day11
+    day11, day12, day13
 );
 
 criterion_group!{
     name = slower_benches;
     config = Criterion::default().sample_size(10);
-    targets = day09_2, day11
+    targets = day01_2, day09_2, day11_2
 }
 criterion_main!(benches, slower_benches);
