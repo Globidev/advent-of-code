@@ -64,6 +64,7 @@ pub struct GameConfig {
     marble_count: usize
 }
 
+#[cfg(test)]
 mod tests {
     use super::*;
     #[test]
