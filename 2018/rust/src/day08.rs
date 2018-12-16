@@ -43,25 +43,23 @@ pub fn parse_input(input: &str) -> impl Iterator<Item = u32> + '_ {
         .map(|x| x.parse().expect("Badly formatted number"))
 }
 
+fn build_graph(data: &[u32]) -> Node {
+    parse_nodes(&mut data.iter().cloned())
+}
+
 #[derive(Debug)]
 struct Node {
     children: Vec<Node>,
     meta_data: Vec<u32>
 }
 
-fn build_graph(data: &[u32]) -> Node {
-    parse_nodes(&mut data.iter().cloned(), 1)
-        .remove(0)
-}
-
-fn parse_nodes(data: &mut impl Iterator<Item = u32>, count: u32) -> Vec<Node> {
-    (0..count)
-        .map(|_| {
-            let (child_len, meta_len) = (data.next().unwrap(), data.next().unwrap());
-            let children = parse_nodes(data, child_len);
-            let meta_data = data.take(meta_len as usize).collect();
-            Node { children, meta_data }
-        }).collect()
+fn parse_nodes(data: &mut impl Iterator<Item = u32>) -> Node {
+    let (child_len, meta_len) = (data.next().unwrap(), data.next().unwrap());
+    let children = (0..child_len)
+        .map(|_| parse_nodes(data))
+        .collect();
+    let meta_data = data.take(meta_len as usize).collect();
+    Node { children, meta_data }
 }
 
 #[cfg(test)]
