@@ -1,5 +1,6 @@
 use std::collections::VecDeque;
 use hashbrown::HashSet;
+use rayon::prelude::*;
 
 const RAW_INPUT: &[u8] = include_bytes!("../../inputs/day15.txt");
 
@@ -25,26 +26,32 @@ pub fn part2(world_builder: &WorldBuilder) -> u32 {
         .filter(|&parsed_entity| *parsed_entity == ParsedEntity::Elf)
         .count();
 
-    let mut ap = 4;
+    let starting_ap = 4_usize;
+    let ending_ap = 200;    // I don't think that having beyond one shotting
+                            // capabilities can make a difference
 
-    loop {
-        let mut world = world_builder.with_elf_ap(ap);
+    (starting_ap..ending_ap+1)
+        .into_par_iter()
+        .filter_map(|ap| {
+            let mut world = world_builder.with_elf_ap(ap as u32);
 
-        let end_turn = (0..)
-            .skip_while(|_| {
-                let is_complete = world.resolve_next_round() == RoundResult::Complete;
-                let had_elf_casualties = world.elves_count < initial_elves_count;
-                is_complete && !had_elf_casualties
-            })
-            .next()
-            .unwrap();
+            let end_turn = (0..)
+                .skip_while(|_| {
+                    let is_complete = world.resolve_next_round() == RoundResult::Complete;
+                    let had_elf_casualties = world.elves_count < initial_elves_count;
+                    is_complete && !had_elf_casualties
+                })
+                .next()
+                .unwrap();
 
-        if world.elves_count == initial_elves_count {
-            return end_turn * world.entities_hps()
-        }
-
-        ap += 1
-    }
+            if world.elves_count == initial_elves_count {
+                Some(end_turn * world.entities_hps())
+            } else {
+                None
+            }
+        })
+        .find_first(|_| true)
+        .unwrap()
 }
 
 pub fn parse_input(input: &[u8]) -> WorldBuilder {
@@ -221,18 +228,13 @@ impl World {
     }
 
     fn first_enemy_in_range(&self, enemy_kind: &UnitKind, position: usize) -> Option<usize> {
-        let mut enemies_in_range: Vec<_> = self.adjacents(position)
+        self.adjacents(position)
             .filter_map(|(pos, entity)| match entity {
                 Entity::Unit { kind, unit } if kind == enemy_kind => Some((pos, unit)),
                 _ => None
             })
-            .collect();
-
-        // ⚠ This only works because sort is stable and will preserve adjacent ordering
-        enemies_in_range.sort_by_key(|(_, unit)| unit.hp);
-
-        enemies_in_range.first()
-            .map(|(pos, _)| *pos)
+            .min_by_key(|(_, unit)| unit.hp)
+            .map(|(pos, _)| pos)
     }
 
     fn attack(&mut self, position: usize, power: u32) {
