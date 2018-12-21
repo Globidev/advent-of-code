@@ -178,6 +178,15 @@ fn day13(c: &mut Criterion) {
     c.bench_function("day13 p2", move |b| b.iter(|| day13::part2(&world, &trains)));
 }
 
+fn day14(c: &mut Criterion) {
+    use aoc_2018::day14;
+
+    const GLOBI_INPUT: usize = 920831;
+    const GLOBI_INPUT_AS_STR: &str = "920831";
+
+    c.bench_function("day14 p1", move |b| b.iter(|| day14::part1(GLOBI_INPUT)));
+    c.bench_function("day14 p2", move |b| b.iter(|| day14::part2(GLOBI_INPUT_AS_STR)));
+}
 criterion_group!(benches,
     day01, day02, day03, day04, day05, day06, day07, day08, day09, day10,
     day11, day12, day13
