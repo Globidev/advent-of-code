@@ -187,6 +187,17 @@ fn day14(c: &mut Criterion) {
     c.bench_function("day14 p1", move |b| b.iter(|| day14::part1(GLOBI_INPUT)));
     c.bench_function("day14 p2", move |b| b.iter(|| day14::part2(GLOBI_INPUT_AS_STR)));
 }
+
+fn day15(c: &mut Criterion) {
+    use aoc_2018::day15;
+
+    const GLOBI_INPUT: &[u8] = include_bytes!("../../inputs/day15.txt");
+
+    let world = day15::parse_input(GLOBI_INPUT);
+    c.bench_function("day15 p1", move |b| b.iter(|| day15::part1(&world)));
+    let world = day15::parse_input(GLOBI_INPUT);
+    c.bench_function("day15 p2", move |b| b.iter(|| day15::part2(&world)));
+}
 criterion_group!(benches,
     day01, day02, day03, day04, day05, day06, day07, day08, day09, day10,
     day11, day12, day13
