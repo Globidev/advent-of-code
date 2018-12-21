@@ -198,6 +198,27 @@ fn day15(c: &mut Criterion) {
     let world = day15::parse_input(GLOBI_INPUT);
     c.bench_function("day15 p2", move |b| b.iter(|| day15::part2(&world)));
 }
+
+fn day16(c: &mut Criterion) {
+    use aoc_2018::day16;
+
+    const GLOBI_INPUT: &[u8] = include_bytes!("../../inputs/day16.txt");
+
+    let (samples, _) = day16::parse_input(GLOBI_INPUT);
+    let packed = day16::vectorize(&samples);
+    // c.bench_function("day16 p1", move |b| b.iter(|| day16::part1_vectorized(&samples)));
+
+    let p1_funs = vec![
+        Fun::new("Normal",     |b, (samples, _): &(Vec<_>, _)| b.iter(|| day16::part1(samples))),
+        Fun::new("Vectorized", |b, (_,  packed): &(Vec<_>, _)| b.iter(|| day16::part1_vectorized(packed))),
+    ];
+
+    c.bench_functions("day16 p1", p1_funs, (samples, packed));
+
+    let (samples, program) = day16::parse_input(GLOBI_INPUT);
+    c.bench_function("day16 p2", move |b| b.iter(|| day16::part2(&samples, &program)));
+}
+
 fn day17(c: &mut Criterion) {
     use aoc_2018::day17;
 
@@ -208,14 +229,37 @@ fn day17(c: &mut Criterion) {
     let ranges: Vec<_> = day17::parse_input(GLOBI_INPUT_STR).collect();
     c.bench_function("day17 p2", move |b| b.iter(|| day17::part2(&ranges)));
 }
+
+fn day18(c: &mut Criterion) {
+    use aoc_2018::day18;
+
+    const GLOBI_INPUT: &[u8] = include_bytes!("../../inputs/day18.txt");
+
+    let world = day18::parse_input(GLOBI_INPUT);
+    c.bench_function("day18 p1", move |b| b.iter(|| day18::part1(&world)));
+    let world = day18::parse_input(GLOBI_INPUT);
+    c.bench_function("day18 p2", move |b| b.iter(|| day18::part2(&world)));
+}
+
+fn day20(c: &mut Criterion) {
+    use aoc_2018::day20;
+
+    const GLOBI_INPUT: &str = include_str!("../../inputs/day20.txt");
+
+    let directions = day20::parse_input(GLOBI_INPUT);
+    c.bench_function("day20 p1", move |b| b.iter(|| day20::part1(&directions)));
+    let directions = day20::parse_input(GLOBI_INPUT);
+    c.bench_function("day20 p2", move |b| b.iter(|| day20::part2(&directions)));
+}
+
 criterion_group!(benches,
     day01, day02, day03, day04, day05, day06, day07, day08, day09, day10,
-    day11, day12, day13
+    day11, day12, day13, day16, day17
 );
 
 criterion_group!{
     name = slower_benches;
     config = Criterion::default().sample_size(10);
-    targets = day01_2, day09_2, day11_2
+    targets = day01_2, day09_2, day11_2, day14, day15, day18, day20
 }
 criterion_main!(benches, slower_benches);
