@@ -263,6 +263,17 @@ fn day20(c: &mut Criterion) {
     c.bench_function("day20 p2", move |b| b.iter(|| day20::part2(&directions)));
 }
 
+fn day21(c: &mut Criterion) {
+    use aoc_2018::day21;
+
+    const GLOBI_INPUT: &[u8] = include_bytes!("../../inputs/day21.txt");
+
+    let (pc_idx, instrs) = day21::parse_input(GLOBI_INPUT);
+    c.bench_function("day21 p1", move |b| b.iter(|| day21::part1(pc_idx, &instrs)));
+    let (pc_idx, instrs) = day21::parse_input(GLOBI_INPUT);
+    c.bench_function("day21 p2", move |b| b.iter(|| day21::part2(pc_idx, &instrs)));
+}
+
 fn day22(c: &mut Criterion) {
     use aoc_2018::day22;
 
@@ -282,6 +293,7 @@ criterion_group!(benches,
 criterion_group!{
     name = slower_benches;
     config = Criterion::default().sample_size(10);
-    targets = day01_2, day09_2, day11_2, day14, day15, day18, day19, day20, day22
+    targets = day01_2, day09_2, day11_2, day14, day15, day18, day19, day20,
+    day22, day21
 }
 criterion_main!(benches, slower_benches);
