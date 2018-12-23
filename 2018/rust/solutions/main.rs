@@ -16,7 +16,9 @@ use aoc_2018::day15;
 use aoc_2018::day16;
 use aoc_2018::day17;
 use aoc_2018::day18;
+use aoc_2018::day19;
 use aoc_2018::day20;
+use aoc_2018::day22;
 
 fn main() {
     println!("day 01: {:?}", day01::day01());
@@ -39,4 +41,5 @@ fn main() {
     println!("day 18: {:?}", day18::day18());
     println!("day 19: {:?}", day19::day19());
     println!("day 20: {:?}", day20::day20());
+    println!("day 22: {:?}", day22::day22());
 }
