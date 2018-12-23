@@ -37,5 +37,6 @@ fn main() {
     println!("day 16: {:?}", day16::day16());
     println!("day 17: {:?}", day17::day17());
     println!("day 18: {:?}", day18::day18());
+    println!("day 19: {:?}", day19::day19());
     println!("day 20: {:?}", day20::day20());
 }
