@@ -255,11 +255,11 @@ fn day19(c: &mut Criterion) {
 fn day20(c: &mut Criterion) {
     use aoc_2018::day20;
 
-    const GLOBI_INPUT: &str = include_str!("../../inputs/day20.txt");
+    const GLOBI_INPUT_STR: &str = include_str!("../../inputs/day20.txt");
 
-    let directions = day20::parse_input(GLOBI_INPUT);
+    let directions = day20::parse_input(GLOBI_INPUT_STR);
     c.bench_function("day20 p1", move |b| b.iter(|| day20::part1(&directions)));
-    let directions = day20::parse_input(GLOBI_INPUT);
+    let directions = day20::parse_input(GLOBI_INPUT_STR);
     c.bench_function("day20 p2", move |b| b.iter(|| day20::part2(&directions)));
 }
 
@@ -277,11 +277,11 @@ fn day21(c: &mut Criterion) {
 fn day22(c: &mut Criterion) {
     use aoc_2018::day22;
 
-    const GLOBI_INPUT: &str = include_str!("../../inputs/day22.txt");
+    const GLOBI_INPUT_STR: &str = include_str!("../../inputs/day22.txt");
 
-    let (depth, target) = day22::parse_input(GLOBI_INPUT);
+    let (depth, target) = day22::parse_input(GLOBI_INPUT_STR);
     c.bench_function("day22 p1", move |b| b.iter(|| day22::part1(depth, target)));
-    let (depth, target) = day22::parse_input(GLOBI_INPUT);
+    let (depth, target) = day22::parse_input(GLOBI_INPUT_STR);
     c.bench_function("day22 p2", move |b| b.iter(|| day22::part2(depth, target)));
 }
 
@@ -296,6 +296,16 @@ fn day23(c: &mut Criterion) {
     c.bench_function("day23 p2", move |b| b.iter(|| day23::part2(&nanobots)));
 }
 
+fn day24(c: &mut Criterion) {
+    use aoc_2018::day24;
+
+    const GLOBI_INPUT_STR: &str = include_str!("../../inputs/day24.txt");
+
+    let groups: Vec<_> = day24::parse_input(GLOBI_INPUT_STR).collect();
+    c.bench_function("day24 p1", move |b| b.iter(|| day24::part1(&groups)));
+    let groups: Vec<_> = day24::parse_input(GLOBI_INPUT_STR).collect();
+    c.bench_function("day24 p2", move |b| b.iter(|| day24::part2(&groups)));
+}
 
 fn day25(c: &mut Criterion) {
     use aoc_2018::day25;
@@ -305,6 +315,7 @@ fn day25(c: &mut Criterion) {
     let points: Vec<_> = day25::parse_input(GLOBI_INPUT_STR).collect();
     c.bench_function("day25 p1", move |b| b.iter(|| day25::part1(&points)));
 }
+
 criterion_group!(benches,
     day01, day02, day03, day04, day05, day06, day07, day08, day09, day10,
     day11, day12, day13, day16, day17, day23
@@ -314,6 +325,6 @@ criterion_group!{
     name = slower_benches;
     config = Criterion::default().sample_size(10);
     targets = day01_2, day09_2, day11_2, day14, day15, day18, day19, day20,
-    day22, day21
+    day21, day22, day24, day25
 }
 criterion_main!(benches, slower_benches);
