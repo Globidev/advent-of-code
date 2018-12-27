@@ -91,7 +91,7 @@ pub fn part2(serial_number: u16) -> (usize, usize, usize) {
                     }
                 }
             }
-            (max, max_x - s + 1, max_y - s + 1, s)
+            (max, max_x.wrapping_sub(s) + 1, max_y.wrapping_sub(s) + 1, s)
         })
         .max_by_key(|(mm, ..)| *mm)
         .unwrap();
