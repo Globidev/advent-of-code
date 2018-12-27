@@ -1,4 +1,5 @@
 use std::cmp::Reverse;
+use rayon::prelude::*;
 
 const RAW_INPUT_STR: &str = include_str!("../../inputs/day24.txt");
 
@@ -10,19 +11,20 @@ pub fn day24() -> (u32, u32) {
 
 pub fn part1(groups: &[Group]) -> u32 {
     match fight(groups, 0) {
-        FightResult::Winner(_, units_left) => units_left,
+        Winner(_, units_left) => units_left,
         _ => panic!("The fight resulted in a draw")
     }
 }
 
 pub fn part2(groups: &[Group]) -> u32 {
-    for boost in 1.. {
-        if let Winner(ImmuneSystem, units_left) = fight(groups, boost) {
-            return units_left
-        }
-    }
-
-    panic!("No reasonnable immune boost value was enough")
+    (1..u32::max_value())
+        .into_par_iter()
+        .filter_map(|boost| match fight(groups, boost) {
+            Winner(ImmuneSystem, units_left) => Some(units_left),
+            _ => None
+        })
+        .find_first(|_| true)
+        .expect("No reasonnable immune boost value was enough")
 }
 
 use self::{ArmyKind::*, FightResult::*};
