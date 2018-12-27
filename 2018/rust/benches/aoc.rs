@@ -285,9 +285,20 @@ fn day22(c: &mut Criterion) {
     c.bench_function("day22 p2", move |b| b.iter(|| day22::part2(depth, target)));
 }
 
+fn day23(c: &mut Criterion) {
+    use aoc_2018::day23;
+
+    const GLOBI_INPUT_STR: &str = include_str!("../../inputs/day23.txt");
+
+    let nanobots: Vec<_> = day23::parse_input(GLOBI_INPUT_STR).collect();
+    c.bench_function("day23 p1", move |b| b.iter(|| day23::part1(&nanobots)));
+    let nanobots: Vec<_> = day23::parse_input(GLOBI_INPUT_STR).collect();
+    c.bench_function("day23 p2", move |b| b.iter(|| day23::part2(&nanobots)));
+}
+
 criterion_group!(benches,
     day01, day02, day03, day04, day05, day06, day07, day08, day09, day10,
-    day11, day12, day13, day16, day17,
+    day11, day12, day13, day16, day17, day23
 );
 
 criterion_group!{
