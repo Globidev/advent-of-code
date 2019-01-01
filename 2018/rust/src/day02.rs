@@ -3,10 +3,6 @@ const RAW_INPUT: &[u8] = include_bytes!("../../inputs/day02.txt");
 const WORD_LEN: usize = 26;
 const WORD_COUNT: usize = 250;
 
-pub fn parse_input(input: &[u8]) -> impl Iterator<Item = &[u8]> {
-    input.split(|&c| c == b'\n')
-}
-
 pub fn day02() -> (usize, String) {
     let input: Vec<_> = parse_input(RAW_INPUT).collect();
 
@@ -79,6 +75,10 @@ fn box_property(r#box: &[u8]) -> BoxProperty {
             if count == 3 { prop.has_triple = true }
             prop
         })
+}
+
+pub fn parse_input(input: &[u8]) -> impl Iterator<Item = &[u8]> {
+    input.split(|&c| c == b'\n')
 }
 
 #[derive(Default)]
