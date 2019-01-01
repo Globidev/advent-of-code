@@ -17,7 +17,7 @@ pub fn part1(groups: &[Group]) -> u32 {
 }
 
 pub fn part2(groups: &[Group]) -> u32 {
-    (1..u32::max_value())
+    (1_u32..1<<10)
         .into_par_iter()
         .filter_map(|boost| match fight(groups, boost) {
             Winner(ImmuneSystem, units_left) => Some(units_left),
