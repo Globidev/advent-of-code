@@ -1,53 +1,49 @@
-use aoc_2018::day01;
-use aoc_2018::day02;
-use aoc_2018::day03;
-use aoc_2018::day04;
-use aoc_2018::day05;
-use aoc_2018::day06;
-use aoc_2018::day07;
-use aoc_2018::day08;
-use aoc_2018::day09;
-use aoc_2018::day10;
-use aoc_2018::day11;
-use aoc_2018::day12;
-use aoc_2018::day13;
-use aoc_2018::day14;
-use aoc_2018::day15;
-use aoc_2018::day16;
-use aoc_2018::day17;
-use aoc_2018::day18;
-use aoc_2018::day19;
-use aoc_2018::day20;
-use aoc_2018::day21;
-use aoc_2018::day22;
-use aoc_2018::day23;
-use aoc_2018::day24;
-use aoc_2018::day25;
+use aoc_2018::*;
+use rayon::prelude::*;
 
 fn main() {
-    println!("day 01: {:?}", day01::day01());
-    println!("day 02: {:?}", day02::day02());
-    println!("day 03: {:?}", day03::day03());
-    println!("day 04: {:?}", day04::day04());
-    println!("day 05: {:?}", day05::day05());
-    println!("day 06: {:?}", day06::day06());
-    println!("day 07: {:?}", day07::day07());
-    println!("day 08: {:?}", day08::day08());
-    println!("day 09: {:?}", day09::day09());
-    println!("day 10: {:?}", day10::day10());
-    println!("day 11: {:?}", day11::day11());
-    println!("day 12: {:?}", day12::day12());
-    println!("day 13: {:?}", day13::day13());
-    println!("day 14: {:?}", day14::day14());
-    println!("day 15: {:?}", day15::day15());
-    println!("day 16: {:?}", day16::day16());
-    println!("day 17: {:?}", day17::day17());
-    println!("day 18: {:?}", day18::day18());
-    println!("day 19: {:?}", day19::day19());
-    println!("day 20: {:?}", day20::day20());
-    println!("day 21: {:?}", day21::day21());
-    println!("day 22: {:?}", day22::day22());
-    println!("day 23: {:?}", day23::day23());
-    println!("day 24: {:?}", day24::day24());
-    println!("day 25: {:?}", day25::day25());
+    let days: [fn() -> _; 25] = [
+        || format!("day 01: {:?}\n", day01::day01()),
+        || format!("day 02: {:?}\n", day02::day02()),
+        || format!("day 03: {:?}\n", day03::day03()),
+        || format!("day 04: {:?}\n", day04::day04()),
+        || format!("day 05: {:?}\n", day05::day05()),
+        || format!("day 06: {:?}\n", day06::day06()),
+        || format!("day 07: {:?}\n", day07::day07()),
+        || format!("day 08: {:?}\n", day08::day08()),
+        || format!("day 09: {:?}\n", day09::day09()),
+        || format!("day 10: {:?}\n", day10::day10()),
+        || format!("day 11: {:?}\n", day11::day11()),
+        || format!("day 12: {:?}\n", day12::day12()),
+        || format!("day 13: {:?}\n", day13::day13()),
+        || format!("day 14: {:?}\n", day14::day14()),
+        || format!("day 15: {:?}\n", day15::day15()),
+        || format!("day 16: {:?}\n", day16::day16()),
+        || format!("day 17: {:?}\n", day17::day17()),
+        || format!("day 18: {:?}\n", day18::day18()),
+        || format!("day 19: {:?}\n", day19::day19()),
+        || format!("day 20: {:?}\n", day20::day20()),
+        || format!("day 21: {:?}\n", day21::day21()),
+        || format!("day 22: {:?}\n", day22::day22()),
+        || format!("day 23: {:?}\n", day23::day23()),
+        || format!("day 24: {:?}\n", day24::day24()),
+        || format!("day 25: {:?}\n", day25::day25()),
+    ];
+
+    let filter: Vec<usize> = std::env::args()
+        .skip(1)
+        .map(|arg| arg.parse().unwrap())
+        .collect();
+
+    let result: String = if filter.is_empty() {
+        days.par_iter()
+            .map(|d| d())
+            .collect()
+    } else {
+        filter.par_iter()
+            .map(|i| days[i - 1]())
+            .collect()
+    };
+
+    println!("{}", result);
 }
