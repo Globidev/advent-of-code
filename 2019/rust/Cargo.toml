@@ -1,0 +1,25 @@
+[package]
+name = "aoc-2019"
+version = "0.1.0"
+authors = ["Guillaume Depardon <guillaume.depardon@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+itertools = "0.8"
+rayon = "1.2"
+
+[dev-dependencies]
+criterion = "0.3"
+
+[[bench]]
+name = "aoc-2019-bench"
+harness = false
+
+[[bin]]
+name = "solutions"
+path = "solutions/main.rs"
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+# lto = true
