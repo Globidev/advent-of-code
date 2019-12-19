@@ -16,7 +16,7 @@ impl<W: IO> VirtualMachine<W> {
         }
     }
 
-    pub fn run(mut self) -> Vec<Int> {
+    pub fn run(mut self) -> EndRunState<W> {
         let world = &mut self.world;
         let mem = &mut self.memory;
 
@@ -28,6 +28,15 @@ impl<W: IO> VirtualMachine<W> {
             }
         }
 
-        self.memory.cells
+        EndRunState {
+            memory: self.memory.cells,
+            world: self.world,
+        }
+
     }
+}
+
+pub struct EndRunState<W: IO> {
+    pub memory: Vec<Int>,
+    pub world: W
 }

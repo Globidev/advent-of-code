@@ -35,8 +35,8 @@ fn run_program(program: &[Int], noun: Int, verb: Int) -> Int {
 
     let vm = VirtualMachine::new(program, Pure);
 
-    let mem_snapshot = vm.run();
-    mem_snapshot[0]
+    let end_state = vm.run();
+    end_state.memory[0]
 }
 
 pub fn parse_input(input: &str) -> impl Iterator<Item = Int> + '_ {
