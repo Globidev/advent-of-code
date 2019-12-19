@@ -70,4 +70,19 @@ pub mod ext {
     impl Output for SingleOutput {
         fn output(&mut self, value: Int) { self.0 = Some(value) }
     }
+
+    use std::sync::mpsc;
+
+    impl Input for mpsc::Receiver<Int> {
+        fn input(&mut self) -> Int {
+            self.recv().expect("Failed to recv value")
+        }
+    }
+
+
+    impl Output for mpsc::Sender<Int> {
+        fn output(&mut self, value: Int) {
+            self.send(value).expect("Failed to send value")
+        }
+    }
 }
