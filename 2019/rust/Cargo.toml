@@ -6,10 +6,15 @@ edition = "2018"
 
 [dependencies]
 itertools = "0.8"
+arraytools = "0.1"
 rayon = "1.2"
+packed_simd = "0.3"
+num = "0.2"
+typenum = "1.11"
 
 [dev-dependencies]
 criterion = "0.3"
+assert_matches = "1.3"
 
 [[bench]]
 name = "aoc-2019-bench"
@@ -21,5 +26,3 @@ path = "solutions/main.rs"
 
 [profile.release]
 panic = "abort"
-codegen-units = 1
-# lto = true
