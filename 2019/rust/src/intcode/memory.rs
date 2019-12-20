@@ -19,9 +19,8 @@ impl Memory {
             self.grow(offset + 4)
         }
 
-        let slice = unsafe { self.cells.get_unchecked(offset..offset + 4) };
-
         unsafe {
+            let slice = self.cells.get_unchecked(offset..offset + 4);
             &*(slice.as_ptr() as *const _)
         }
     }
@@ -38,6 +37,10 @@ impl Memory {
 
     pub fn get_relative(&mut self, base_offset: Int) -> &mut Int {
         self.get(base_offset + self.rel_base)
+    }
+
+    pub fn move_relative_base(&mut self, delta: Int) {
+        self.rel_base += delta;
     }
 
     fn grow(&mut self, min_size: usize) {

@@ -45,7 +45,10 @@ impl CPU {
                 let result = lhs.get(mem) == rhs.get(mem);
                 *dest.get_mut(mem) = Int::from(result);
             },
-            Instruction::RelBase(_) => unimplemented!(),
+            Instruction::RelBase([param]) => {
+                let delta = param.get(mem);
+                mem.move_relative_base(delta)
+            },
             Instruction::Halt(_) => return ExecResult::Halt,
         }
 
