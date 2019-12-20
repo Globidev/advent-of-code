@@ -80,7 +80,7 @@ fn shortest_route(orbit_map: &HashMap<&str, Vec<&str>>, start: &str, target: &st
         }
     }
 
-    panic!("Not route found!")
+    panic!("No route found!")
 }
 
 pub type OrbitRelation = [String; 2];
