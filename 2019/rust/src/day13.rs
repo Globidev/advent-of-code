@@ -1,4 +1,4 @@
-use std::fmt::{self, Debug};
+use std::fmt::Debug;
 use std::collections::HashMap;
 use itertools::Itertools;
 use std::cmp::Ordering;

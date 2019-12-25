@@ -94,6 +94,7 @@ impl Param {
     }
 }
 
+#[allow(type_alias_bounds)]
 type Params<N: Unsigned> = [Param; N::USIZE];
 
 const fn instruction_param_count<T>(_: &impl Fn(T) -> Instruction) -> usize {
