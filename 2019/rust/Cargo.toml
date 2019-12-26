@@ -23,6 +23,3 @@ harness = false
 [[bin]]
 name = "solutions"
 path = "solutions/main.rs"
-
-[profile.release]
-panic = "abort"
