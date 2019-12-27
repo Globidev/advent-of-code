@@ -1,7 +1,7 @@
 use std::fmt::Debug;
 use itertools::Itertools;
 use std::collections::{VecDeque, HashSet, HashMap, BinaryHeap};
-use std::cmp::{Ordering, Reverse};
+use std::cmp::Ordering;
 use std::array::IntoIter;
 
 const RAW_INPUT_STR: &str = include_str!("../../inputs/day18.txt");
@@ -76,8 +76,7 @@ pub fn part1(maze: &Maze) -> usize {
 
     impl Ord for State {
         fn cmp(&self, other: &Self) -> Ordering {
-            Reverse(self.metric()).cmp(&Reverse(other.metric()))
-            // Reverse(self.steps).cmp(&Reverse(other.steps))
+            self.metric().cmp(&other.metric()).reverse()
         }
     }
 
@@ -222,8 +221,7 @@ pub fn part2(maze: &Maze) -> usize {
 
     impl Ord for State {
         fn cmp(&self, other: &Self) -> Ordering {
-            Reverse(self.metric()).cmp(&Reverse(other.metric()))
-            // Reverse(self.steps).cmp(&Reverse(other.steps))
+            self.metric().cmp(&other.metric()).reverse()
         }
     }
 
