@@ -143,15 +143,11 @@ impl Direction {
     }
 }
 
-pub fn parse_input<'a>(input: &'a str) -> (impl Iterator<Item = Movement> + 'a, impl Iterator<Item = Movement> + 'a) {
-    let mut lines = input.lines();
-
-    let parse_movements = |line: &'a str| line.split(',').map(Movement::parse);
-
-    (
-        parse_movements(lines.next().expect("Missing first wire movements")),
-        parse_movements(lines.next().expect("Missing second wire movements")),
-    )
+pub fn parse_input(input: &'_ str) -> (impl Iterator<Item = Movement> + '_, impl Iterator<Item = Movement> + '_) {
+    input.lines()
+        .map(|line| line.split(',').map(Movement::parse))
+        .next_tuple()
+        .expect("Missing wire movements")
 }
 
 #[cfg(test)]
