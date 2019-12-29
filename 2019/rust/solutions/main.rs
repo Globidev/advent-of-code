@@ -25,7 +25,7 @@ fn main() {
         || format!("day 20: {:?}\n", day20::day20()),
         || format!("day 21: {:?}\n", day21::day21()),
         // || format!("day 22: {:?}\n", day22::day22()),
-        // || format!("day 23: {:?}\n", day23::day23()),
+        || format!("day 23: {:?}\n", day23::day23()),
         // || format!("day 24: {:?}\n", day24::day24()),
         // || format!("day 25: {:?}\n", day25::day25()),
     ];
