@@ -12,10 +12,12 @@ pub fn day15() -> impl Debug {
 }
 
 pub fn part1(program: &[Int]) -> usize {
-    let mut mapper = Mapper::default();
-
-    let vm = VirtualMachine::new(program, &mut mapper);
-    vm.run();
+    let mapper = VirtualMachine::builder()
+        .load(program)
+        .driver(Mapper::default())
+        .build()
+        .run()
+        .driver;
 
     let oxygen_system_pos = mapper.oxygen_system_position()
         .expect("Oxygen system must be found at this point!");
@@ -24,12 +26,13 @@ pub fn part1(program: &[Int]) -> usize {
 }
 
 pub fn part2(program: &[Int]) -> usize {
-    let mut mapper = Mapper::default();
-
-    let vm = VirtualMachine::new(program, &mut mapper);
-    vm.run();
-
-    mapper.oxygen_fill_time()
+    VirtualMachine::builder()
+        .load(program)
+        .driver(Mapper::default())
+        .build()
+        .run()
+        .driver
+        .oxygen_fill_time()
 }
 
 struct Mapper {

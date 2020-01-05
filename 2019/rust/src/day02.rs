@@ -1,7 +1,7 @@
 use std::fmt::Debug;
 use itertools::Itertools;
 use rayon::prelude::*;
-use crate::intcode::{Int, vm::VirtualMachine, io::ext::Pure};
+use crate::intcode::{Int, vm::VirtualMachine};
 
 const RAW_INPUT_STR: &str = include_str!("../../inputs/day02.txt");
 
@@ -30,13 +30,15 @@ pub fn part2(program: &[Int]) -> Int {
 
 fn run_program(program: &[Int], noun: Int, verb: Int) -> Int {
     let mut program = program.to_vec();
+
     program[1] = noun;
     program[2] = verb;
 
-    let vm = VirtualMachine::new(program, Pure);
-
-    let end_state = vm.run();
-    end_state.memory[0]
+    VirtualMachine::builder()
+        .load(program)
+        .build()
+        .run()
+        .memory[0]
 }
 
 pub fn parse_input(input: &str) -> impl Iterator<Item = Int> + '_ {

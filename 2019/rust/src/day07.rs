@@ -38,7 +38,13 @@ fn run_amplifiers(program: &[Int], settings: &[Int]) -> Int {
             tx.send(setting).expect("Failed to send phase setting");
             tx = next_tx.clone();
             let rx = std::mem::replace(&mut rx, next_rx);
-            VirtualMachine::new(program, Split(rx, next_tx))
+
+            VirtualMachine::builder()
+                .load(program)
+                .input_driver(rx)
+                .output_driver(next_tx)
+                .build()
+            // VirtualMachine::new(program, Split(rx, next_tx))
         });
 
     let handles = amplifiers
@@ -84,7 +90,7 @@ fn run_amplifiers_feedback_loop(program: &[Int], settings: &[Int]) -> Int {
 
     amplifiers.first_mut()
         .expect("No amplifiers")
-        .world.0.recv()
+        .input().recv()
         .expect("Failed to get output")
 }
 

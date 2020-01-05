@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 use itertools::Itertools;
-use crate::intcode::{Int, vm::VirtualMachine, io::ext::{Split, Iter, SingleOutput}};
+use crate::intcode::{Int, vm::VirtualMachine};
 
 const RAW_INPUT_STR: &str = include_str!("../../inputs/day05.txt");
 
@@ -23,16 +23,14 @@ pub fn part2(program: &[Int]) -> Int {
 }
 
 fn run_program(program: &[Int], seed: Int) -> Int {
-    let mut output = SingleOutput::new();
-    let world = Split(
-        Iter(std::iter::once(seed)),
-        &mut output,
-    );
-
-    let vm = VirtualMachine::new(program, world);
-    vm.run();
-
-    output.get().expect("No output!")
+    VirtualMachine::builder()
+        .load(program)
+        .input_once(seed)
+        .single_output()
+        .build()
+        .run()
+        .output()
+        .expect("No output!")
 }
 
 pub fn parse_input(input: &str) -> impl Iterator<Item = Int> + '_ {

@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 use itertools::Itertools;
-use crate::intcode::{Int, vm::VirtualMachine, io::{Output, ext::{Split, Pure, Iter, SingleOutput}}};
+use crate::intcode::{Int, vm::VirtualMachine, io::Output};
 use std::convert::TryInto;
 use std::array::IntoIter;
 
@@ -13,10 +13,12 @@ pub fn day17() -> impl Debug {
 }
 
 pub fn part1(program: &[Int]) -> usize {
-    let mut mapper = Mapper::default();
-
-    let vm = VirtualMachine::new(program, Split(Pure, &mut mapper));
-    vm.run();
+    let mapper = VirtualMachine::builder()
+        .load(program)
+        .output_driver(Mapper::default())
+        .build()
+        .run()
+        .into_output();
 
     let map_width = mapper.width.expect("Did not encounter a newline somehow");
     let tiles = mapper.tiles;
@@ -51,10 +53,12 @@ pub fn part1(program: &[Int]) -> usize {
 }
 
 pub fn part2(program: &[Int]) -> Int {
-    let mut mapper = Mapper::default();
-
-    let vm = VirtualMachine::new(program, Split(Pure, &mut mapper));
-    vm.run();
+    let mapper = VirtualMachine::builder()
+        .load(program)
+        .output_driver(Mapper::default())
+        .build()
+        .run()
+        .into_output();
 
     let map_width = mapper.width.expect("Did not encounter a newline somehow");
     let tiles = mapper.tiles;
@@ -125,14 +129,14 @@ y
     let mut program = program.to_vec();
     program[0] = 2;
 
-    let input = Iter(input.chars().map(|c| c as Int));
-
-    let mut output = SingleOutput::new();
-
-    let vm = VirtualMachine::new(program, Split(input, &mut output));
-    vm.run();
-
-    output.get().expect("Robot did not report collected dust")
+    VirtualMachine::builder()
+        .load(program)
+        .input_iter(input.chars().map(|c| c as _))
+        .single_output()
+        .build()
+        .run()
+        .output()
+        .expect("Robot did not report collected dust")
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]

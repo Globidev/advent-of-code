@@ -12,19 +12,27 @@ pub fn day11() -> impl Debug {
 }
 
 pub fn part1(program: &[Int]) -> usize {
-    let mut hull = HullPaintingRobot::default();
-    let vm = VirtualMachine::new(program, &mut hull);
-    vm.run();
-    hull.painted.values().count()
+    VirtualMachine::builder()
+        .load(program)
+        .driver(HullPaintingRobot::default())
+        .build()
+        .run()
+        .driver.painted.values().count()
 }
 
 pub fn part2(program: &[Int]) -> String {
-    let mut hull = HullPaintingRobot::default();
-    hull.grid.insert(Pos { x: 0, y: 0 }, Color::White);
-    let vm = VirtualMachine::new(program, &mut hull);
-    vm.run();
+    let mut robot = HullPaintingRobot::default();
+    robot.grid.insert(Pos { x: 0, y: 0 }, Color::White);
+
+    let robot = VirtualMachine::builder()
+        .load(program)
+        .driver(robot)
+        .build()
+        .run()
+        .driver;
+
     let mut canvas = std::iter::repeat_with(|| vec!['░'; 43]).take(6).collect_vec();
-    for (Pos { x, y }, color) in hull.grid {
+    for (Pos { x, y }, color) in robot.grid {
         canvas[y as usize][x as usize] = match color {
             Color::Black => '░',
             Color::White => '▓',

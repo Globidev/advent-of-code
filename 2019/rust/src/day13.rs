@@ -13,12 +13,15 @@ pub fn day13() -> impl Debug {
 }
 
 pub fn part1(program: &[Int]) -> usize {
-    let mut game = ArcadeGame::default();
+    let screen = VirtualMachine::builder()
+        .load(program)
+        .driver(ArcadeGame::default())
+        .build()
+        .run()
+        .driver.screen;
 
-    let vm = VirtualMachine::new(program, &mut game);
-    vm.run();
-
-    game.screen.tiles.values()
+    screen.tiles
+        .values()
         .filter(|&&t| t == Tile::Block)
         .count()
 }
@@ -27,12 +30,12 @@ pub fn part2(program: &[Int]) -> Int {
     let mut program = program.to_vec();
     program[0] = 2; // Play for free
 
-    let mut game = ArcadeGame::default();
-
-    let vm = VirtualMachine::new(program, &mut game);
-    vm.run();
-
-    game.score
+    VirtualMachine::builder()
+        .load(program)
+        .driver(ArcadeGame::default())
+        .build()
+        .run()
+        .driver.score
 }
 
 #[derive(Debug, Default)]
