@@ -1,5 +1,5 @@
 use super::Int;
-use super::memory::Memory;
+use super::memory::{Memory, Address, AddressAbsolute, AddressRelative};
 use num::Integer;
 use typenum::{Unsigned, U0, U1, U2, U3};
 use arraytools::ArrayTools;
@@ -62,17 +62,17 @@ impl Instruction {
 
 #[derive(Debug, Clone, Copy)]
 pub enum Param {
-    Position { addr: Int },
+    Position { addr: AddressAbsolute },
     Immediate { value: Int },
-    Relative { base_addr: Int },
+    Relative { base_addr: AddressRelative },
 }
 
 impl Param {
     fn from_code_and_value(code: u16, value: Int) -> Self {
         match code {
-            0 => Param::Position { addr: value },
+            0 => Param::Position { addr: AddressAbsolute(value) },
             1 => Param::Immediate { value },
-            2 => Param::Relative { base_addr: value },
+            2 => Param::Relative { base_addr: AddressRelative(value) },
             unknown => unreachable!("Unknown param code: {}", unknown)
         }
     }
@@ -81,7 +81,7 @@ impl Param {
         match self {
             Param::Position { addr } => *mem.get(addr),
             Param::Immediate { value } => value,
-            Param::Relative { base_addr } => *mem.get_relative(base_addr),
+            Param::Relative { base_addr } => *mem.get(base_addr),
         }
     }
 
@@ -89,7 +89,7 @@ impl Param {
         match self {
             Param::Position { addr } => mem.get(addr),
             Param::Immediate { .. } => unreachable!("Immediate as destination"),
-            Param::Relative { base_addr } => mem.get_relative(base_addr),
+            Param::Relative { base_addr } => mem.get(base_addr),
         }
     }
 }
@@ -111,9 +111,9 @@ mod tests {
         assert_matches!(
             Instruction::decode(&[1, 2, 3, 4]).0,
             Instruction::Add([
-                Param::Position { addr: 2 },
-                Param::Position { addr: 3 },
-                Param::Position { addr: 4 },
+                Param::Position { addr: AddressAbsolute(2) },
+                Param::Position { addr: AddressAbsolute(3) },
+                Param::Position { addr: AddressAbsolute(4) },
             ])
         )
     }
