@@ -27,6 +27,8 @@ impl<T: Input + Output> IO for T {
 }
 
 pub mod ext {
+    use std::ops::Deref;
+
     pub struct Split<I, O>(pub I, pub O);
 
     impl<I: Input, O: Output> IO for Split<I, O> {
@@ -56,6 +58,14 @@ pub mod ext {
     use super::*;
     #[derive(Default, Debug)]
     pub struct SingleOutput(Option<Int>);
+
+    impl Deref for SingleOutput {
+        type Target = Option<Int>;
+
+        fn deref(&self) -> &Self::Target {
+            &self.0
+        }
+    }
 
     impl SingleOutput {
         pub fn new() -> Self {
