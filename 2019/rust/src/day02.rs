@@ -1,7 +1,7 @@
 use std::fmt::Debug;
 use itertools::Itertools;
 use rayon::prelude::*;
-use crate::intcode::{Int, vm::VirtualMachine};
+use crate::intcode::{Int, vm::{VirtualMachine, VMBuilder}};
 
 const RAW_INPUT_STR: &str = include_str!("../../inputs/day02.txt");
 
@@ -34,9 +34,7 @@ fn run_program(program: &[Int], noun: Int, verb: Int) -> Int {
     program[1] = noun;
     program[2] = verb;
 
-    VirtualMachine::builder()
-        .load(program)
-        .build()
+    VirtualMachine::load(program)
         .run()
         .memory[0]
 }

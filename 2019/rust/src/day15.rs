@@ -1,7 +1,7 @@
 use std::fmt::Debug;
 use std::collections::{HashMap, HashSet, VecDeque};
 use itertools::Itertools;
-use crate::intcode::{Int, vm::VirtualMachine, io::{Output, Input}};
+use crate::intcode::{Int, vm::{VirtualMachine, VMBuilder}, io::{Output, Input}};
 
 const RAW_INPUT_STR: &str = include_str!("../../inputs/day15.txt");
 
@@ -12,10 +12,8 @@ pub fn day15() -> impl Debug {
 }
 
 pub fn part1(program: &[Int]) -> usize {
-    let mapper = VirtualMachine::builder()
-        .load(program)
-        .driver(Mapper::default())
-        .build()
+    let mapper = VirtualMachine::load(program)
+        .with_driver::<Mapper>()
         .run()
         .driver;
 
@@ -26,10 +24,8 @@ pub fn part1(program: &[Int]) -> usize {
 }
 
 pub fn part2(program: &[Int]) -> usize {
-    VirtualMachine::builder()
-        .load(program)
-        .driver(Mapper::default())
-        .build()
+    VirtualMachine::load(program)
+        .with_driver::<Mapper>()
         .run()
         .driver
         .oxygen_fill_time()

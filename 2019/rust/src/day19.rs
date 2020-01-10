@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 use itertools::Itertools;
-use crate::intcode::{Int, vm::VirtualMachine};
+use crate::intcode::{Int, vm::{VirtualMachine, VMBuilder}};
 use std::array::IntoIter;
 use rayon::prelude::*;
 
@@ -38,11 +38,9 @@ pub fn part2(program: &[Int]) -> usize {
 }
 
 fn beam_state(program: &[Int], x: usize, y: usize) -> DroneState {
-    let raw_beam_state = VirtualMachine::builder()
-        .load(program)
+    let raw_beam_state = VirtualMachine::load(program)
         .input_iter(IntoIter::new([x as _, y as _]))
         .single_output()
-        .build()
         .run()
         .output()
         .expect("Did not get a beam state output");

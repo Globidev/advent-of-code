@@ -2,7 +2,7 @@ use std::fmt::Debug;
 use std::thread;
 use std::sync::mpsc::channel;
 use itertools::Itertools;
-use crate::intcode::{Int, vm::VirtualMachine, io::ext::Split};
+use crate::intcode::{Int, vm::{VirtualMachine, VMBuilder}, io::ext::Split};
 
 const RAW_INPUT_STR: &str = include_str!("../../inputs/day07.txt");
 
@@ -39,12 +39,10 @@ fn run_amplifiers(program: &[Int], settings: &[Int]) -> Int {
             tx = next_tx.clone();
             let rx = std::mem::replace(&mut rx, next_rx);
 
-            VirtualMachine::builder()
-                .load(program)
+            VirtualMachine::load(program)
                 .input_driver(rx)
                 .output_driver(next_tx)
                 .build()
-            // VirtualMachine::new(program, Split(rx, next_tx))
         });
 
     let handles = amplifiers
@@ -72,11 +70,18 @@ fn run_amplifiers_feedback_loop(program: &[Int], settings: &[Int]) -> Int {
             tx.send(setting).expect("Failed to send phase setting");
             tx = next_tx.clone();
             let rx = std::mem::replace(&mut rx, next_rx);
-            VirtualMachine::new(program, Split(rx, next_tx))
+            VirtualMachine::load(program)
+                .input_driver(rx)
+                .output_driver(next_tx)
+                .build()
         })
         .collect_vec();
 
-    let first_amp = VirtualMachine::new(program, Split(rx, init_tx));
+    let first_amp = VirtualMachine::load(program)
+        .input_driver(rx)
+        .output_driver(init_tx)
+        .build();
+
     tx.send(settings[0]).expect("Failed to send phase setting");
     tx.send(0).expect("Failed to initial input value");
 

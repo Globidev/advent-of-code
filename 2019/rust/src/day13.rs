@@ -2,7 +2,7 @@ use std::fmt::Debug;
 use std::collections::HashMap;
 use itertools::Itertools;
 use std::cmp::Ordering;
-use crate::intcode::{Int, vm::VirtualMachine, io::{Output, Input}};
+use crate::intcode::{Int, vm::{VirtualMachine, VMBuilder}, io::{Output, Input}};
 
 const RAW_INPUT_STR: &str = include_str!("../../inputs/day13.txt");
 
@@ -13,10 +13,8 @@ pub fn day13() -> impl Debug {
 }
 
 pub fn part1(program: &[Int]) -> usize {
-    let screen = VirtualMachine::builder()
-        .load(program)
+    let screen = VirtualMachine::load(program)
         .driver(ArcadeGame::default())
-        .build()
         .run()
         .driver.screen;
 
@@ -30,10 +28,8 @@ pub fn part2(program: &[Int]) -> Int {
     let mut program = program.to_vec();
     program[0] = 2; // Play for free
 
-    VirtualMachine::builder()
-        .load(program)
+    VirtualMachine::load(program)
         .driver(ArcadeGame::default())
-        .build()
         .run()
         .driver.score
 }

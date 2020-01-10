@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 use itertools::Itertools;
-use crate::intcode::{Int, vm::VirtualMachine};
+use crate::intcode::{Int, vm::{VirtualMachine, VMBuilder}};
 
 const RAW_INPUT_STR: &str = include_str!("../../inputs/day09.txt");
 
@@ -19,11 +19,9 @@ pub fn part2(program: &[Int]) -> Int {
 }
 
 fn run_program(program: &[Int], seed: Int) -> Int {
-    VirtualMachine::builder()
-        .load(program)
+    VirtualMachine::load(program)
         .input_once(seed)
         .single_output()
-        .build()
         .run()
         .output()
         .expect("Didn't get any output")

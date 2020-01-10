@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 use itertools::Itertools;
-use crate::intcode::{Int, vm::VirtualMachine, io::Output};
+use crate::intcode::{Int, vm::{VirtualMachine, VMBuilder}, io::Output};
 use std::convert::TryInto;
 use std::array::IntoIter;
 
@@ -13,10 +13,8 @@ pub fn day17() -> impl Debug {
 }
 
 pub fn part1(program: &[Int]) -> usize {
-    let mapper = VirtualMachine::builder()
-        .load(program)
-        .output_driver(Mapper::default())
-        .build()
+    let mapper = VirtualMachine::load(program)
+        .with_output_driver::<Mapper>()
         .run()
         .into_output();
 
@@ -53,10 +51,8 @@ pub fn part1(program: &[Int]) -> usize {
 }
 
 pub fn part2(program: &[Int]) -> Int {
-    let mapper = VirtualMachine::builder()
-        .load(program)
-        .output_driver(Mapper::default())
-        .build()
+    let mapper = VirtualMachine::load(program)
+        .with_output_driver::<Mapper>()
         .run()
         .into_output();
 
@@ -129,11 +125,9 @@ y
     let mut program = program.to_vec();
     program[0] = 2;
 
-    VirtualMachine::builder()
-        .load(program)
+    VirtualMachine::load(program)
         .input_iter(input.chars().map(|c| c as _))
         .single_output()
-        .build()
         .run()
         .output()
         .expect("Robot did not report collected dust")

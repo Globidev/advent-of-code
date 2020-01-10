@@ -1,6 +1,6 @@
 use std::fmt::{self, Display, Debug};
 use itertools::Itertools;
-use crate::intcode::{Int, vm::VirtualMachine};
+use crate::intcode::{Int, vm::{VirtualMachine, VMBuilder}};
 
 const RAW_INPUT_STR: &str = include_str!("../../inputs/day21.txt");
 
@@ -42,11 +42,9 @@ fn run_springscript(program: &[Int], script: &[Instruction]) -> Int {
     let ascii_script = script.iter().join("\n");
     let script_bytes = ascii_script.bytes().map(Int::from);
 
-    VirtualMachine::builder()
-        .load(program)
+    VirtualMachine::load(program)
         .input_iter(script_bytes)
         .single_output()
-        .build()
         .run()
         .output()
         .expect("Failed to reach the hull!")

@@ -1,7 +1,7 @@
 use std::fmt::{self, Debug};
 use std::collections::HashMap;
 use itertools::Itertools;
-use crate::intcode::{Int, vm::VirtualMachine, io::{Input, Output}};
+use crate::intcode::{Int, vm::{VirtualMachine, VMBuilder}, io::{Input, Output}};
 
 const RAW_INPUT_STR: &str = include_str!("../../inputs/day11.txt");
 
@@ -12,10 +12,8 @@ pub fn day11() -> impl Debug {
 }
 
 pub fn part1(program: &[Int]) -> usize {
-    VirtualMachine::builder()
-        .load(program)
-        .driver(HullPaintingRobot::default())
-        .build()
+    VirtualMachine::load(program)
+        .with_driver::<HullPaintingRobot>()
         .run()
         .driver.painted.values().count()
 }
@@ -24,10 +22,8 @@ pub fn part2(program: &[Int]) -> String {
     let mut robot = HullPaintingRobot::default();
     robot.grid.insert(Pos { x: 0, y: 0 }, Color::White);
 
-    let robot = VirtualMachine::builder()
-        .load(program)
+    let robot = VirtualMachine::load(program)
         .driver(robot)
-        .build()
         .run()
         .driver;
 

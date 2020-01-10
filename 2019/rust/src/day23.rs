@@ -1,7 +1,7 @@
-use std::fmt::{self, Display, Debug};
+use std::fmt::{Debug};
 use itertools::Itertools;
-use crate::intcode::{Int, vm::VirtualMachine, io::{Input, Output, ext::{Split, Iter, SingleOutput}}};
-use std::{thread, sync::{Arc, Mutex}};
+use crate::intcode::{Int, vm::VirtualMachine, io::{Input, Output}};
+use std::{sync::{Arc, Mutex}};
 use std::collections::{VecDeque, HashSet};
 
 const RAW_INPUT_STR: &str = include_str!("../../inputs/day23.txt");
@@ -32,7 +32,7 @@ pub fn part1(program: &[Int]) -> Int {
         .y
 }
 
-pub fn part2(program: &[Int]) -> Int {
+pub fn part2(_program: &[Int]) -> Int {
     42
 }
 
@@ -158,6 +158,6 @@ mod tests {
     fn p2() {
         let code = parse_input(RAW_INPUT_STR).collect_vec();
 
-        assert_eq!(part2(&code), 1_142_048_514);
+        assert_eq!(part2(&code), 11_462);
     }
 }
