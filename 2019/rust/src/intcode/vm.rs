@@ -1,9 +1,8 @@
 use std::borrow::Cow;
 use super::{Int, io::{IO, Input, Output, ext::{Pure, Split, Iter, SingleOutput}}, memory::Memory, cpu::{CPU, ExecResult}};
-use std::marker::PhantomData;
 use std::iter::{once, Once};
 
-pub struct VirtualMachine<D: IO> {
+pub struct VirtualMachine<D> {
     driver: D,
     memory: Memory,
     cpu: CPU,
@@ -35,85 +34,101 @@ impl<D: IO> VirtualMachine<D> {
             driver: self.driver,
         }
     }
+}
 
-    pub fn builder() -> VMBuilder<D> {
-        VMBuilder(PhantomData)
+pub struct UnboundedDriver;
+
+impl VirtualMachine<UnboundedDriver> {
+    pub fn load<'a>(program: impl Into<Cow<'a, [Int]>>) -> VMBuilderProgram<'a> {
+        VMBuilderProgram(program.into())
     }
 }
 
-pub struct VMBuilder<D: IO>(PhantomData<D>);
-pub struct VMBuilderProgram<'a, D: IO>(Cow<'a, [Int]>, PhantomData<D>);
-pub struct VMBuilderProgramInput<'a, I: Input, O: Output>(Cow<'a, [Int]>, I, PhantomData<O>);
-pub struct VMBuilderProgramOutput<'a, I: Input, O: Output>(Cow<'a, [Int]>, O, PhantomData<I>);
+pub struct VMBuilderProgram<'a>(Cow<'a, [Int]>);
+pub struct VMBuilderProgramInput<'a, I: Input>(Cow<'a, [Int]>, I);
+pub struct VMBuilderProgramOutput<'a, O: Output>(Cow<'a, [Int]>, O);
 pub struct VMBuilderProgramIO<'a, D: IO>(Cow<'a, [Int]>, D);
 
-impl<D: IO> VMBuilder<D> {
-    pub fn load<'a>(self, program: impl Into<Cow<'a, [Int]>>) -> VMBuilderProgram<'a, D> {
-        VMBuilderProgram(program.into(), PhantomData)
-    }
-}
-
-impl VMBuilderProgram<'_, Pure> {
-    pub fn build(self) -> VirtualMachine<Pure> {
-        VirtualMachine::new(self.0, Pure)
-    }
-}
-
-impl<'a, I: Input, O: Output> VMBuilderProgram<'a, Split<I, O>> {
-    pub fn input_driver(self, driver: I) -> VMBuilderProgramInput<'a, I, O> {
-        VMBuilderProgramInput(self.0, driver, PhantomData)
-    }
-
-    pub fn output_driver(self, driver: O) -> VMBuilderProgramOutput<'a, I, O> {
-        VMBuilderProgramOutput(self.0, driver, PhantomData)
-    }
-}
-
-impl<'a, D: IO> VMBuilderProgram<'a, D> {
-    pub fn driver(self, driver: D) -> VMBuilderProgramIO<'a, D> {
+impl<'a> VMBuilderProgram<'a> {
+    pub fn driver<D: IO>(self, driver: D) -> VMBuilderProgramIO<'a, D> {
         VMBuilderProgramIO(self.0, driver)
     }
-}
 
-impl<'a, I: Iterator<Item = Int>, O: Output> VMBuilderProgram<'a, Split<Iter<I>, O>> {
-    pub fn input_iter(self, iter: I) -> VMBuilderProgramInput<'a, Iter<I>, O> {
+    pub fn input_driver<I: Input>(self, driver: I) -> VMBuilderProgramInput<'a, I> {
+        VMBuilderProgramInput(self.0, driver)
+    }
+
+    pub fn output_driver<O: Output>(self, driver: O) -> VMBuilderProgramOutput<'a, O> {
+        VMBuilderProgramOutput(self.0, driver)
+    }
+
+    pub fn with_driver<D: IO + Default>(self) -> VMBuilderProgramIO<'a, D> {
+        self.driver(D::default())
+    }
+
+    pub fn with_input_driver<I: Input + Default>(self) -> VMBuilderProgramInput<'a, I> {
+        self.input_driver(I::default())
+    }
+
+    pub fn with_output_driver<O: Output + Default>(self) -> VMBuilderProgramOutput<'a, O> {
+        self.output_driver(O::default())
+    }
+
+    pub fn input_iter<I: Iterator<Item = Int>>(self, iter: I) -> VMBuilderProgramInput<'a, Iter<I>> {
         self.input_driver(Iter(iter))
     }
-}
 
-impl<'a, O: Output> VMBuilderProgram<'a, Split<Iter<Once<Int>>, O>> {
-    pub fn input_once(self, value: Int) -> VMBuilderProgramInput<'a, Iter<Once<Int>>, O> {
+    pub fn input_once(self, value: Int) -> VMBuilderProgramInput<'a, Iter<Once<Int>>> {
         self.input_iter(once(value))
     }
 }
 
-impl<'a, I: Input, O: Output> VMBuilderProgramInput<'a, I, O> {
-    pub fn output_driver(self, driver: O) -> VMBuilderProgramIO<'a, Split<I, O>> {
+impl<'a, I: Input> VMBuilderProgramInput<'a, I> {
+    pub fn output_driver<O: Output>(self, driver: O) -> VMBuilderProgramIO<'a, Split<I, O>> {
         VMBuilderProgramIO(self.0, Split(self.1, driver))
     }
-}
 
-impl<'a, I: Input> VMBuilderProgramInput<'a, I, SingleOutput> {
     pub fn single_output(self) -> VMBuilderProgramIO<'a, Split<I, SingleOutput>> {
         self.output_driver(SingleOutput::new())
     }
 }
 
-impl<'a, I: Input, O: Output> VMBuilderProgramOutput<'a, I, O> {
-    pub fn input_driver(self, driver: I) -> VMBuilderProgramIO<'a, Split<I, O>> {
+impl<'a, O: Output> VMBuilderProgramOutput<'a, O> {
+    pub fn input_driver<I: Input>(self, driver: I) -> VMBuilderProgramIO<'a, Split<I, O>> {
         VMBuilderProgramIO(self.0, Split(driver, self.1))
     }
 }
 
-impl<'a, O: Output> VMBuilderProgramOutput<'a, Pure, O> {
-    pub fn build(self) -> VirtualMachine<Split<Pure, O>> {
+impl VMBuilder<Pure> for VMBuilderProgram<'_> {
+    fn build(self) -> VirtualMachine<Pure> {
+        VirtualMachine::new(self.0, Pure)
+    }
+}
+
+impl<D: IO> VMBuilder<D> for VMBuilderProgramIO<'_, D> {
+    fn build(self) -> VirtualMachine<D> {
+        VirtualMachine::new(self.0, self.1)
+    }
+}
+
+impl<I: Input> VMBuilder<Split<I, Pure>> for VMBuilderProgramInput<'_, I> {
+    fn build(self) -> VirtualMachine<Split<I, Pure>> {
+        self.output_driver(Pure).build()
+    }
+}
+
+impl<O: Output> VMBuilder<Split<Pure, O>> for VMBuilderProgramOutput<'_, O> {
+    fn build(self) -> VirtualMachine<Split<Pure, O>> {
         self.input_driver(Pure).build()
     }
 }
 
-impl<D: IO> VMBuilderProgramIO<'_, D> {
-    pub fn build(self) -> VirtualMachine<D> {
-        VirtualMachine::new(self.0, self.1)
+pub trait VMBuilder<D: IO>: Sized {
+    fn build(self) -> VirtualMachine<D>;
+
+    fn run(self) -> EndRunState<D> {
+        self.build()
+            .run()
     }
 }
 
